@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>PhysioPS HumanOS — ANS Intelligence</title>
+<link href="https://api.fontshare.com/v2/css?f[]=space-grotesk@300,400,500,600,700&f[]=general-sans@400,500,600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --teal: #00d4c8;
+  --teal-dim: rgba(0,212,200,0.15);
+  --teal-glow: rgba(0,212,200,0.4);
+  --orange: #ff6a2f;
+  --orange-dim: rgba(255,106,47,0.15);
+  --orange-glow: rgba(255,106,47,0.4);
+  --bg: #04060e;
+  --bg2: #070a14;
+  --bg3: #0a0f1c;
+  --surface: rgba(255,255,255,0.04);
+  --surface2: rgba(255,255,255,0.07);
+  --border: rgba(255,255,255,0.08);
+  --text: #e8eaf2;
+  --muted: #6b7280;
+  --faint: #374151;
+  --font: 'Space Grotesk', sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:var(--font);}
+body{display:flex;flex-direction:column;align-items:center;justify-content:center;}
+
+/* PHONE FRAME */
+.phone-wrapper{position:relative;width:100vw;height:100vh;max-width:430px;max-height:932px;display:flex;flex-direction:column;overflow:hidden;background:var(--bg);}
+@media(min-width:500px){.phone-wrapper{border-radius:48px;box-shadow:0 40px 120px rgba(0,0,0,0.8),0 0 0 1px rgba(255,255,255,0.08),inset 0 0 0 1px rgba(255,255,255,0.04);}}
+
+/* CANVAS BG */
+#particleCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;}
+
+/* CONTENT */
+.app-content{position:relative;z-index:1;flex:1;overflow:hidden;display:flex;flex-direction:column;}
+
+/* HEADER */
+.app-header{padding:52px 20px 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.logo-mark{display:flex;align-items:center;gap:10px;}
+.logo-icon{width:36px;height:36px;}
+.logo-text{font-size:18px;font-weight:700;letter-spacing:-0.5px;}
+.logo-text span{color:var(--teal);}
+.header-right{display:flex;align-items:center;gap:12px;}
+.live-badge{display:flex;align-items:center;gap:6px;background:rgba(0,212,200,0.1);border:1px solid rgba(0,212,200,0.25);border-radius:20px;padding:6px 12px;font-size:11px;font-weight:600;letter-spacing:1px;color:var(--teal);}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--teal);animation:pulse-dot 1.4s ease-in-out infinite;}
+@keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.5;transform:scale(0.7);}}
+.avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--orange));display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#000;}
+
+/* SCREENS */
+.screens{flex:1;overflow:hidden;position:relative;}
+.screen{position:absolute;top:0;left:0;width:100%;height:100%;overflow-y:auto;padding:0 0 90px;opacity:0;transform:translateX(30px);transition:opacity 0.4s cubic-bezier(0.16,1,0.3,1),transform 0.4s cubic-bezier(0.16,1,0.3,1);pointer-events:none;}
+.screen.active{opacity:1;transform:translateX(0);pointer-events:all;}
+.screen::-webkit-scrollbar{display:none;}
+
+/* BOTTOM NAV */
+.bottom-nav{position:absolute;bottom:0;left:0;width:100%;padding:12px 8px 28px;display:flex;justify-content:space-around;background:linear-gradient(to top,rgba(4,6,14,0.98) 0%,rgba(4,6,14,0.9) 80%,transparent);z-index:100;backdrop-filter:blur(20px);}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 16px;border-radius:16px;cursor:pointer;transition:all 0.3s;border:none;background:none;color:var(--muted);font-family:var(--font);}
+.nav-item svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+.nav-label{font-size:10px;font-weight:600;letter-spacing:0.5px;}
+.nav-item.active{color:var(--teal);}
+.nav-item.active .nav-icon-wrap{background:rgba(0,212,200,0.12);}
+.nav-icon-wrap{padding:6px;border-radius:12px;transition:background 0.3s;}
+
+/* === HOME SCREEN === */
+.home-pad{padding:0 20px;}
+.greeting{font-size:14px;color:var(--muted);margin-bottom:2px;}
+.greeting strong{color:var(--text);}
+.readiness-hero{margin:16px 0;background:var(--surface);border:1px solid var(--border);border-radius:28px;padding:24px;position:relative;overflow:hidden;}
+.rh-glow{position:absolute;top:-40px;right:-40px;width:200px;height:200px;background:radial-gradient(circle,rgba(0,212,200,0.12) 0%,transparent 70%);pointer-events:none;}
+.rh-title{font-size:12px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:16px;}
+.rh-main{display:flex;align-items:center;gap:20px;}
+.rh-gauge-wrap{position:relative;flex-shrink:0;}
+.rh-gauge{width:130px;height:130px;}
+.gauge-bg{fill:none;stroke:rgba(255,255,255,0.05);stroke-width:8;}
+.gauge-symp{fill:none;stroke:var(--orange);stroke-width:8;stroke-linecap:round;transform-origin:65px 65px;transform:rotate(-130deg);transition:stroke-dasharray 1.5s cubic-bezier(0.16,1,0.3,1);filter:drop-shadow(0 0 6px var(--orange));}
+.gauge-para{fill:none;stroke:var(--teal);stroke-width:8;stroke-linecap:round;transform-origin:65px 65px;transform:rotate(-130deg);transition:stroke-dasharray 1.5s cubic-bezier(0.16,1,0.3,1);filter:drop-shadow(0 0 8px var(--teal));}
+.rh-score{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;}
+.rh-num{font-size:34px;font-weight:700;line-height:1;color:var(--text);}
+.rh-unit{font-size:10px;color:var(--muted);letter-spacing:1px;}
+.rh-stats{flex:1;}
+.rh-stat{margin-bottom:12px;}
+.rh-stat-label{font-size:11px;color:var(--muted);margin-bottom:4px;display:flex;justify-content:space-between;}
+.rh-stat-label span{color:var(--text);font-weight:600;}
+.stat-bar-bg{height:4px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden;}
+.stat-bar-fill{height:100%;border-radius:4px;transition:width 1.5s cubic-bezier(0.16,1,0.3,1);}
+.stat-bar-fill.t{background:linear-gradient(90deg,var(--teal),rgba(0,212,200,0.6));box-shadow:0 0 8px var(--teal-glow);}
+.stat-bar-fill.o{background:linear-gradient(90deg,var(--orange),rgba(255,106,47,0.6));box-shadow:0 0 8px var(--orange-glow);}
+.stat-bar-fill.p{background:linear-gradient(90deg,#a78bfa,rgba(167,139,250,0.6));}
+
+.kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0 20px 16px;}
+.kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:16px;position:relative;overflow:hidden;}
+.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;border-radius:20px 20px 0 0;}
+.kpi-card.t::before{background:linear-gradient(90deg,var(--teal),transparent);}
+.kpi-card.o::before{background:linear-gradient(90deg,var(--orange),transparent);}
+.kpi-card.p::before{background:linear-gradient(90deg,#a78bfa,transparent);}
+.kpi-card.g::before{background:linear-gradient(90deg,#34d399,transparent);}
+.kpi-label{font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;}
+.kpi-value{font-size:28px;font-weight:700;line-height:1;}
+.kpi-value.t{color:var(--teal);}
+.kpi-value.o{color:var(--orange);}
+.kpi-value.p{color:#a78bfa;}
+.kpi-value.g{color:#34d399;}
+.kpi-unit{font-size:11px;color:var(--muted);}
+.kpi-delta{font-size:11px;margin-top:4px;}
+.kpi-delta.up{color:#34d399;}
+.kpi-delta.down{color:#f87171;}
+
+.section-label{font-size:12px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;padding:0 20px;margin-bottom:10px;}
+
+.ecg-card{margin:0 20px 16px;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:16px;overflow:hidden;}
+.ecg-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.ecg-title{font-size:13px;font-weight:600;}
+.ecg-bpm{font-size:22px;font-weight:700;color:var(--teal);}
+.ecg-bpm-unit{font-size:11px;color:var(--muted);}
+.ecg-canvas{width:100%;height:60px;display:block;}
+
+.ai-insight{margin:0 20px 16px;background:linear-gradient(135deg,rgba(0,212,200,0.06),rgba(167,139,250,0.06));border:1px solid rgba(0,212,200,0.2);border-radius:20px;padding:16px;}
+.ai-label{font-size:10px;color:var(--teal);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.ai-dot{width:5px;height:5px;border-radius:50%;background:var(--teal);animation:pulse-dot 1.4s ease-in-out infinite;}
+.ai-text{font-size:14px;line-height:1.5;color:var(--text);}
+
+/* === ANS SCREEN === */
+.venn-container{margin:12px 20px;position:relative;}
+.venn-svg{width:100%;height:240px;}
+.venn-label{font-family:var(--font);font-size:13px;font-weight:600;}
+.venn-pct{font-family:var(--font);font-size:28px;font-weight:700;}
+.venn-center-label{font-family:var(--font);font-size:11px;fill:rgba(255,255,255,0.8);font-weight:600;}
+.hrv-ring-card{margin:0 20px 16px;background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:20px;}
+.hrv-ring-title{font-size:13px;font-weight:600;color:var(--muted);margin-bottom:16px;text-align:center;letter-spacing:1px;text-transform:uppercase;}
+.hrv-ring-wrap{position:relative;width:160px;height:160px;margin:0 auto 16px;}
+.hrv-ring-svg{width:160px;height:160px;}
+.hrv-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;}
+.hrv-big{font-size:32px;font-weight:700;color:var(--teal);}
+.hrv-ms{font-size:12px;color:var(--muted);}
+.hrv-label{font-size:10px;color:var(--muted);margin-top:2px;letter-spacing:1px;}
+.hrv-metrics-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.hrv-metric{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:10px 12px;}
+.hrv-metric-label{font-size:10px;color:var(--muted);letter-spacing:0.5px;margin-bottom:4px;}
+.hrv-metric-val{font-size:18px;font-weight:700;}
+.hrv-metric-val.t{color:var(--teal);}
+.hrv-metric-val.o{color:var(--orange);}
+.hrv-metric-val.p{color:#a78bfa;}
+.hrv-metric-val.g{color:#34d399;}
+.hrv-metric-unit{font-size:10px;color:var(--muted);}
+
+.freq-domain{margin:0 20px 16px;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:16px;}
+.freq-title{font-size:12px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;}
+.freq-bar-row{margin-bottom:10px;}
+.freq-bar-label{display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px;}
+.freq-bar-label span:last-child{font-weight:600;}
+.freq-bar-bg{height:6px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden;}
+.freq-bar-fill{height:100%;border-radius:4px;}
+.vlf{background:linear-gradient(90deg,#a78bfa,rgba(167,139,250,0.5));}
+.lf{background:linear-gradient(90deg,var(--orange),rgba(255,106,47,0.5));}
+.hf{background:linear-gradient(90deg,var(--teal),rgba(0,212,200,0.5));}
+
+/* === MEASURE SCREEN === */
+.measure-hero{margin:12px 20px;background:linear-gradient(135deg,rgba(0,212,200,0.08),rgba(255,106,47,0.08));border:1px solid rgba(0,212,200,0.15);border-radius:28px;padding:24px;text-align:center;}
+.measure-title{font-size:22px;font-weight:700;margin-bottom:6px;}
+.measure-sub{font-size:13px;color:var(--muted);line-height:1.5;}
+.device-select{display:flex;gap:8px;padding:0 20px;margin-bottom:16px;overflow-x:auto;scrollbar-width:none;}
+.device-select::-webkit-scrollbar{display:none;}
+.dev-btn{flex-shrink:0;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:10px 16px;display:flex;align-items:center;gap:8px;cursor:pointer;transition:all 0.3s;font-family:var(--font);color:var(--muted);font-size:12px;font-weight:500;}
+.dev-btn.active{background:var(--teal-dim);border-color:var(--teal);color:var(--teal);}
+.dev-icon{font-size:16px;}
+
+.nfc-card{margin:0 20px 16px;background:linear-gradient(135deg,rgba(0,212,200,0.05),rgba(10,15,28,0.95));border:1px solid rgba(0,212,200,0.25);border-radius:24px;overflow:hidden;position:relative;}
+.nfc-badge{position:absolute;top:16px;right:16px;background:rgba(0,212,200,0.15);border:1px solid rgba(0,212,200,0.3);border-radius:20px;padding:4px 10px;font-size:9px;font-weight:700;letter-spacing:1.5px;color:var(--teal);text-transform:uppercase;}
+.nfc-visual{display:flex;align-items:center;justify-content:center;padding:28px 20px 16px;gap:20px;}
+.nfc-garment{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,rgba(0,212,200,0.2),rgba(255,106,47,0.1));border:2px solid rgba(0,212,200,0.3);display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0;}
+.nfc-garment::after{content:'';position:absolute;inset:-8px;border-radius:50%;border:1px solid rgba(0,212,200,0.15);animation:nfc-ring 2s ease-in-out infinite;}
+@keyframes nfc-ring{0%,100%{transform:scale(1);opacity:0.5;}50%{transform:scale(1.08);opacity:0.2;}}
+.nfc-garment svg{width:36px;height:36px;stroke:var(--teal);fill:none;stroke-width:1.5;}
+.nfc-info{flex:1;}
+.nfc-name{font-size:15px;font-weight:700;margin-bottom:4px;}
+.nfc-desc{font-size:12px;color:var(--muted);line-height:1.4;}
+.nfc-sensors{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:0 16px 16px;}
+.nfc-sensor{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:8px 10px;display:flex;align-items:center;gap:6px;}
+.sensor-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.sensor-label{font-size:11px;color:var(--muted);}
+
+.protocol-card{margin:0 20px 16px;background:var(--surface);border:1px solid var(--border);border-radius:20px;overflow:hidden;}
+.protocol-header{padding:14px 16px;border-bottom:1px solid var(--border);font-size:12px;font-weight:600;letter-spacing:1px;color:var(--muted);text-transform:uppercase;}
+.protocol-phases{padding:12px 16px;}
+.phase-row{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
+.phase-row:last-child{border-bottom:none;}
+.phase-num{width:24px;height:24px;border-radius:50%;background:var(--bg3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;}
+.phase-row.active .phase-num{background:var(--teal-dim);border-color:var(--teal);color:var(--teal);}
+.phase-info{flex:1;}
+.phase-name{font-size:13px;font-weight:500;}
+.phase-duration{font-size:11px;color:var(--muted);}
+.phase-status{font-size:11px;font-weight:600;}
+.phase-status.done{color:#34d399;}
+.phase-status.active{color:var(--teal);}
+.phase-status.pend{color:var(--muted);}
+
+.start-btn{display:flex;margin:0 20px 16px;background:linear-gradient(135deg,var(--teal),#00b4aa);border:none;border-radius:20px;padding:18px;align-items:center;justify-content:center;gap:10px;font-family:var(--font);font-size:16px;font-weight:700;color:#000;cursor:pointer;transition:all 0.3s;box-shadow:0 8px 32px rgba(0,212,200,0.3);}
+.start-btn:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(0,212,200,0.4);}
+.start-btn svg{width:20px;height:20px;stroke:#000;fill:none;stroke-width:2.5;}
+
+/* === DEVICES SCREEN === */
+.devices-hero{margin:12px 20px 16px;position:relative;}
+.devices-hero-img{width:100%;height:160px;object-fit:cover;border-radius:24px;display:block;}
+.devices-hero-overlay{position:absolute;inset:0;border-radius:24px;background:linear-gradient(to top,rgba(4,6,14,0.9),transparent 60%);display:flex;align-items:flex-end;padding:16px;}
+.devices-hero-text .h1{font-size:20px;font-weight:700;}
+.devices-hero-text .h2{font-size:12px;color:var(--teal);}
+
+.device-card{margin:0 20px 12px;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:16px;display:flex;align-items:center;gap:14px;}
+.device-icon{width:50px;height:50px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
+.device-icon.watch{background:rgba(0,212,200,0.1);}
+.device-icon.chest{background:rgba(255,106,47,0.1);}
+.device-icon.nfc{background:rgba(167,139,250,0.1);}
+.device-info{flex:1;}
+.device-name{font-size:14px;font-weight:600;}
+.device-sub{font-size:11px;color:var(--muted);margin-top:2px;}
+.device-status{display:flex;align-items:center;gap:5px;margin-top:6px;}
+.status-dot{width:7px;height:7px;border-radius:50%;}
+.status-dot.connected{background:#34d399;box-shadow:0 0 6px rgba(52,211,153,0.6);}
+.status-dot.searching{background:var(--orange);animation:pulse-dot 1.4s ease-in-out infinite;}
+.status-dot.offline{background:var(--muted);}
+.status-label{font-size:11px;font-weight:500;}
+.status-label.connected{color:#34d399;}
+.status-label.searching{color:var(--orange);}
+.device-signal{display:flex;align-items:flex-end;gap:2px;height:16px;}
+.signal-bar{width:3px;border-radius:2px;background:var(--border);}
+.signal-bar.active{background:var(--teal);}
+
+.edge-card{margin:0 20px 16px;background:linear-gradient(135deg,rgba(167,139,250,0.06),rgba(0,212,200,0.04));border:1px solid rgba(167,139,250,0.2);border-radius:20px;padding:16px;}
+.edge-title{font-size:12px;color:#a78bfa;letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;font-weight:600;}
+.edge-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.edge-stat{text-align:center;}
+.edge-val{font-size:16px;font-weight:700;color:#a78bfa;}
+.edge-lab{font-size:10px;color:var(--muted);}
+
+/* === INSIGHTS SCREEN === */
+.insight-card{margin:0 20px 12px;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:16px;position:relative;overflow:hidden;}
+.insight-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:3px;}
+.insight-card.warn::before{background:var(--orange);}
+.insight-card.good::before{background:#34d399;}
+.insight-card.info::before{background:#a78bfa;}
+.insight-icon{width:36px;height:36px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:10px;}
+.insight-icon.warn{background:rgba(255,106,47,0.1);}
+.insight-icon.good{background:rgba(52,211,153,0.1);}
+.insight-icon.info{background:rgba(167,139,250,0.1);}
+.insight-title{font-size:14px;font-weight:600;margin-bottom:4px;}
+.insight-body{font-size:12px;color:var(--muted);line-height:1.6;}
+.insight-tag{display:inline-flex;align-items:center;gap:4px;margin-top:8px;background:rgba(0,212,200,0.1);border-radius:20px;padding:3px 10px;font-size:10px;color:var(--teal);letter-spacing:0.5px;}
+
+.heatmap-card{margin:0 20px 12px;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:16px;}
+.heatmap-title{font-size:12px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;}
+.heatmap-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;}
+.heatmap-day{border-radius:8px;aspect-ratio:1;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:2px;}
+.heatmap-day-name{font-size:8px;color:var(--muted);letter-spacing:0.5px;}
+.heatmap-day-score{font-size:13px;font-weight:700;}
+
+.compare-table{margin:0 20px 16px;background:var(--surface);border:1px solid var(--border);border-radius:20px;overflow:hidden;}
+.compare-header{display:grid;grid-template-columns:1fr 80px 80px;background:rgba(255,255,255,0.04);padding:12px 16px;font-size:11px;font-weight:600;color:var(--muted);letter-spacing:0.5px;}
+.compare-header .physio{color:var(--teal);}
+.compare-row{display:grid;grid-template-columns:1fr 80px 80px;padding:10px 16px;border-top:1px solid var(--border);align-items:center;}
+.compare-feature{font-size:12px;color:var(--text);}
+.compare-cell{text-align:center;font-size:16px;}
+.compare-cell.has{color:var(--teal);}
+.compare-cell.no{color:var(--faint);}
+
+/* ANIMATIONS */
+@keyframes fade-in{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+.screen.active > *{animation:fade-in 0.5s cubic-bezier(0.16,1,0.3,1) both;}
+.screen.active > *:nth-child(1){animation-delay:0.05s;}
+.screen.active > *:nth-child(2){animation-delay:0.1s;}
+.screen.active > *:nth-child(3){animation-delay:0.15s;}
+.screen.active > *:nth-child(4){animation-delay:0.2s;}
+.screen.active > *:nth-child(5){animation-delay:0.25s;}
+.screen.active > *:nth-child(6){animation-delay:0.3s;}
+
+.scroll-hint{text-align:center;font-size:10px;color:var(--faint);padding:8px 0;}
+</style>
+</head>
+<body>
+<canvas id="particleCanvas"></canvas>
+
+<div class="phone-wrapper">
+  <div class="app-content">
+    <header class="app-header">
+      <div class="logo-mark">
+        <svg class="logo-icon" viewBox="0 0 36 36" fill="none">
+          <circle cx="18" cy="18" r="17" stroke="rgba(0,212,200,0.3)" stroke-width="1"/>
+          <path d="M8 18 C8 12 12 8 18 8 C24 8 28 12 28 18" stroke="#00d4c8" stroke-width="2" stroke-linecap="round"/>
+          <path d="M8 18 C8 24 12 28 18 28 C24 28 28 24 28 18" stroke="#ff6a2f" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="18" cy="18" r="4" fill="none" stroke="#fff" stroke-width="1.5"/>
+          <path d="M14 18 L16 16 L18 20 L20 14 L22 18" stroke="#00d4c8" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="logo-text">Physio<span>PS</span></span>
+      </div>
+      <div class="header-right">
+        <div class="live-badge"><span class="live-dot"></span>LIVE</div>
+        <div class="avatar">AN</div>
+      </div>
+    </header>
+
+    <div class="screens">
+      <!-- ===== HOME ===== -->
+      <div class="screen active" id="screen-home">
+        <div class="home-pad">
+          <div class="greeting">Good morning, <strong>Alex</strong></div>
+        </div>
+
+        <div class="readiness-hero">
+          <div class="rh-glow"></div>
+          <div class="rh-title">⚡ ANS READINESS — TODAY</div>
+          <div class="rh-main">
+            <div class="rh-gauge-wrap">
+              <svg class="rh-gauge" viewBox="0 0 130 130">
+                <circle class="gauge-bg" cx="65" cy="65" r="52" stroke-dasharray="217 999"/>
+                <circle class="gauge-symp" cx="65" cy="65" r="52" stroke-dasharray="0 217" id="gaugeSymp"/>
+                <circle class="gauge-para" cx="65" cy="65" r="46" stroke-dasharray="0 217" id="gaugePara"/>
+              </svg>
+              <div class="rh-score">
+                <div class="rh-num" id="homeScore">—</div>
+                <div class="rh-unit">SCORE</div>
+              </div>
+            </div>
+            <div class="rh-stats">
+              <div class="rh-stat">
+                <div class="rh-stat-label">Parasympathetic <span id="paraVal">66%</span></div>
+                <div class="stat-bar-bg"><div class="stat-bar-fill t" id="paraBar" style="width:0%"></div></div>
+              </div>
+              <div class="rh-stat">
+                <div class="rh-stat-label">Sympathetic <span id="sympVal">34%</span></div>
+                <div class="stat-bar-bg"><div class="stat-bar-fill o" id="sympBar" style="width:0%"></div></div>
+              </div>
+              <div class="rh-stat">
+                <div class="rh-stat-label">Vagal Tone <span>High</span></div>
+                <div class="stat-bar-bg"><div class="stat-bar-fill t" style="width:0%" id="vagalBar"></div></div>
+              </div>
+              <div class="rh-stat">
+                <div class="rh-stat-label">Coherence <span>92%</span></div>
+                <div class="stat-bar-bg"><div class="stat-bar-fill p" style="width:0%" id="cohBar"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="kpi-grid">
+          <div class="kpi-card t">
+            <div class="kpi-label">HRV RMSSD</div>
+            <div class="kpi-value t" id="kpiHRV">76</div>
+            <div class="kpi-unit">ms</div>
+            <div class="kpi-delta up">↑ +8 vs yesterday</div>
+          </div>
+          <div class="kpi-card o">
+            <div class="kpi-label">Heart Rate</div>
+            <div class="kpi-value o" id="kpiBPM">62</div>
+            <div class="kpi-unit">bpm</div>
+            <div class="kpi-delta up">↓ −4 vs baseline</div>
+          </div>
+          <div class="kpi-card p">
+            <div class="kpi-label">Stress Index</div>
+            <div class="kpi-value p">24</div>
+            <div class="kpi-unit">% low</div>
+            <div class="kpi-delta up">↓ −6 vs yesterday</div>
+          </div>
+          <div class="kpi-card g">
+            <div class="kpi-label">Recovery</div>
+            <div class="kpi-value g">88</div>
+            <div class="kpi-unit">%</div>
+            <div class="kpi-delta up">↑ +12 optimal</div>
+          </div>
+        </div>
+
+        <div class="section-label">LIVE ECG — POLAR H10</div>
+        <div class="ecg-card">
+          <div class="ecg-header">
+            <span class="ecg-title">Lead II Signal · 500Hz</span>
+            <div><span class="ecg-bpm" id="liveBPM">62</span> <span class="ecg-bpm-unit">bpm</span></div>
+          </div>
+          <canvas class="ecg-canvas" id="ecgCanvas" height="60"></canvas>
+        </div>
+
+        <div class="ai-insight">
+          <div class="ai-label"><span class="ai-dot"></span>HUMANOS NEURAL ENGINE</div>
+          <div class="ai-text">Your parasympathetic branch dominance at 66% indicates excellent recovery state. HRV trending +12% above 30-day baseline. Optimal window for high-intensity training or deep cognitive work.</div>
+        </div>
+        <div class="scroll-hint">scroll for more ↓</div>
+      </div>
+
+      <!-- ===== ANS ===== -->
+      <div class="screen" id="screen-ans">
+        <div class="section-label" style="padding-top:8px;">P&S DUAL BRANCH ANALYSIS</div>
+
+        <div class="venn-container">
+          <svg class="venn-svg" viewBox="0 0 380 240">
+            <defs>
+              <radialGradient id="sympGrad" cx="40%" cy="50%">
+                <stop offset="0%" stop-color="#ff6a2f" stop-opacity="0.25"/>
+                <stop offset="100%" stop-color="#ff6a2f" stop-opacity="0"/>
+              </radialGradient>
+              <radialGradient id="paraGrad" cx="60%" cy="50%">
+                <stop offset="0%" stop-color="#00d4c8" stop-opacity="0.25"/>
+                <stop offset="100%" stop-color="#00d4c8" stop-opacity="0"/>
+              </radialGradient>
+              <filter id="glow-orange"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+              <filter id="glow-teal"><feGaussianBlur stdDeviation="4" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+            </defs>
+            <!-- Sympathetic circle -->
+            <circle cx="145" cy="120" r="95" fill="url(#sympGrad)"/>
+            <circle cx="145" cy="120" r="95" fill="none" stroke="#ff6a2f" stroke-width="1.5" stroke-opacity="0.7" filter="url(#glow-orange)"/>
+            <!-- Parasympathetic circle -->
+            <circle cx="235" cy="120" r="95" fill="url(#paraGrad)"/>
+            <circle cx="235" cy="120" r="95" fill="none" stroke="#00d4c8" stroke-width="1.5" stroke-opacity="0.7" filter="url(#glow-teal)"/>
+            <!-- Center overlap label -->
+            <text x="190" y="110" text-anchor="middle" class="venn-center-label">Balance</text>
+            <text x="190" y="126" text-anchor="middle" class="venn-center-label">Zone</text>
+            <!-- Symp label -->
+            <text x="108" y="108" text-anchor="middle" class="venn-label" fill="#ff6a2f">Sympathetic</text>
+            <text x="108" y="136" text-anchor="middle" class="venn-pct" fill="#ff6a2f">34%</text>
+            <!-- Para label -->
+            <text x="272" y="108" text-anchor="middle" class="venn-label" fill="#00d4c8">Parasympath.</text>
+            <text x="272" y="136" text-anchor="middle" class="venn-pct" fill="#00d4c8">66%</text>
+            <!-- HRV top -->
+            <text x="190" y="22" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="11" font-family="Space Grotesk">HRV RMSSD</text>
+            <text x="190" y="46" text-anchor="middle" fill="#00d4c8" font-size="22" font-weight="700" font-family="Space Grotesk">58 ms</text>
+            <!-- Bottom metrics -->
+            <text x="70" y="220" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-size="10" font-family="Space Grotesk">SDNN</text>
+            <text x="70" y="234" text-anchor="middle" fill="#ff6a2f" font-size="13" font-weight="700" font-family="Space Grotesk">72 ms</text>
+            <text x="310" y="220" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-size="10" font-family="Space Grotesk">LF/HF</text>
+            <text x="310" y="234" text-anchor="middle" fill="#00d4c8" font-size="13" font-weight="700" font-family="Space Grotesk">0.8</text>
+          </svg>
+        </div>
+
+        <div class="hrv-ring-card">
+          <div class="hrv-ring-title">HRV SPECTRAL ANALYSIS</div>
+          <div class="hrv-ring-wrap">
+            <svg class="hrv-ring-svg" viewBox="0 0 160 160">
+              <circle cx="80" cy="80" r="68" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="10"/>
+              <circle cx="80" cy="80" r="68" fill="none" stroke="#a78bfa" stroke-width="10" stroke-linecap="round" stroke-dasharray="56 371" transform="rotate(-90 80 80)" style="filter:drop-shadow(0 0 6px rgba(167,139,250,0.5))"/>
+              <circle cx="80" cy="80" r="55" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="9"/>
+              <circle cx="80" cy="80" r="55" fill="none" stroke="#ff6a2f" stroke-width="9" stroke-linecap="round" stroke-dasharray="110 345" transform="rotate(-90 80 80)" style="filter:drop-shadow(0 0 6px rgba(255,106,47,0.5))"/>
+              <circle cx="80" cy="80" r="43" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="9"/>
+              <circle cx="80" cy="80" r="43" fill="none" stroke="#00d4c8" stroke-width="9" stroke-linecap="round" stroke-dasharray="175 270" transform="rotate(-90 80 80)" style="filter:drop-shadow(0 0 8px rgba(0,212,200,0.6))"/>
+            </svg>
+            <div class="hrv-center">
+              <div class="hrv-big">76</div>
+              <div class="hrv-ms">RMSSD</div>
+              <div class="hrv-label">ms</div>
+            </div>
+          </div>
+          <div class="hrv-metrics-grid">
+            <div class="hrv-metric"><div class="hrv-metric-label">SDNN</div><div class="hrv-metric-val t">72<span class="hrv-metric-unit"> ms</span></div></div>
+            <div class="hrv-metric"><div class="hrv-metric-label">LF Power</div><div class="hrv-metric-val o">412<span class="hrv-metric-unit"> ms²</span></div></div>
+            <div class="hrv-metric"><div class="hrv-metric-label">HF Power</div><div class="hrv-metric-val t">687<span class="hrv-metric-unit"> ms²</span></div></div>
+            <div class="hrv-metric"><div class="hrv-metric-label">LF/HF</div><div class="hrv-metric-val p">0.8</div></div>
+            <div class="hrv-metric"><div class="hrv-metric-label">pNN50</div><div class="hrv-metric-val g">38<span class="hrv-metric-unit">%</span></div></div>
+            <div class="hrv-metric"><div class="hrv-metric-label">VLF Power</div><div class="hrv-metric-val p">156<span class="hrv-metric-unit"> ms²</span></div></div>
+          </div>
+        </div>
+
+        <div class="freq-domain">
+          <div class="freq-title">Frequency Domain Power</div>
+          <div class="freq-bar-row">
+            <div class="freq-bar-label"><span style="color:#a78bfa">VLF (0–0.04 Hz)</span><span>156 ms²</span></div>
+            <div class="freq-bar-bg"><div class="freq-bar-fill vlf" style="width:22%"></div></div>
+          </div>
+          <div class="freq-bar-row">
+            <div class="freq-bar-label"><span style="color:var(--orange)">LF (0.04–0.15 Hz)</span><span>412 ms²</span></div>
+            <div class="freq-bar-bg"><div class="freq-bar-fill lf" style="width:50%"></div></div>
+          </div>
+          <div class="freq-bar-row">
+            <div class="freq-bar-label"><span style="color:var(--teal)">HF (0.15–0.4 Hz)</span><span>687 ms²</span></div>
+            <div class="freq-bar-bg"><div class="freq-bar-fill hf" style="width:78%"></div></div>
+          </div>
+        </div>
+        <div class="scroll-hint">scroll for more ↓</div>
+      </div>
+
+      <!-- ===== MEASURE ===== -->
+      <div class="screen" id="screen-measure">
+        <div class="measure-hero">
+          <div class="measure-title">Start ANS Session</div>
+          <div class="measure-sub">Dual P&S analysis using your connected wearables. 5–15 min protocol.</div>
+        </div>
+
+        <div class="section-label">SELECT DEVICE SOURCE</div>
+        <div class="device-select">
+          <button class="dev-btn active" onclick="selectDev(this)"><span class="dev-icon">⌚</span>Apple Watch</button>
+          <button class="dev-btn" onclick="selectDev(this)"><span class="dev-icon">💓</span>Polar H10</button>
+          <button class="dev-btn" onclick="selectDev(this)"><span class="dev-icon">🧬</span>NFC Fabric</button>
+          <button class="dev-btn" onclick="selectDev(this)"><span class="dev-icon">📡</span>All Sources</button>
+        </div>
+
+        <div class="section-label">PATENT-PENDING WEARABLE</div>
+        <div class="nfc-card">
+          <div class="nfc-badge">⚡ NFC POWERED</div>
+          <div class="nfc-visual">
+            <div class="nfc-garment">
+              <svg viewBox="0 0 36 36"><path d="M18 6 C10 6 6 11 6 18 C6 25 10 30 18 30 C26 30 30 25 30 18 C30 11 26 6 18 6Z" stroke-width="1.5"/><path d="M13 18 L15 16 L18 22 L21 12 L23 18" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="nfc-info">
+              <div class="nfc-name">PhysioPS NFC BioFabric™</div>
+              <div class="nfc-desc">Patent-pending compression wearable. 6 biosensors woven into conductive fabric. Zero battery — harvests energy via NFC field.</div>
+            </div>
+          </div>
+          <div class="nfc-sensors">
+            <div class="nfc-sensor"><div class="sensor-dot" style="background:#00d4c8"></div><span class="sensor-label">ECG (3-lead)</span></div>
+            <div class="nfc-sensor"><div class="sensor-dot" style="background:#ff6a2f"></div><span class="sensor-label">PPG Optical</span></div>
+            <div class="nfc-sensor"><div class="sensor-dot" style="background:#a78bfa"></div><span class="sensor-label">Galvanic Skin</span></div>
+            <div class="nfc-sensor"><div class="sensor-dot" style="background:#34d399"></div><span class="sensor-label">Respiration</span></div>
+            <div class="nfc-sensor"><div class="sensor-dot" style="background:#fbbf24"></div><span class="sensor-label">Skin Temp</span></div>
+            <div class="nfc-sensor"><div class="sensor-dot" style="background:#60a5fa"></div><span class="sensor-label">Barometric</span></div>
+          </div>
+        </div>
+
+        <div class="section-label">MEASUREMENT PROTOCOL</div>
+        <div class="protocol-card">
+          <div class="protocol-header">15-MIN STANDARD SESSION</div>
+          <div class="protocol-phases">
+            <div class="phase-row active">
+              <div class="phase-num">1</div>
+              <div class="phase-info"><div class="phase-name">Baseline Calibration</div><div class="phase-duration">3 min · Still + breathing</div></div>
+              <div class="phase-status active">Active</div>
+            </div>
+            <div class="phase-row">
+              <div class="phase-num">2</div>
+              <div class="phase-info"><div class="phase-name">Sympathetic Load</div><div class="phase-duration">5 min · Cognitive task</div></div>
+              <div class="phase-status pend">Pending</div>
+            </div>
+            <div class="phase-row">
+              <div class="phase-num">3</div>
+              <div class="phase-info"><div class="phase-name">Recovery Window</div><div class="phase-duration">5 min · Deep breathing</div></div>
+              <div class="phase-status pend">Pending</div>
+            </div>
+            <div class="phase-row">
+              <div class="phase-num">4</div>
+              <div class="phase-info"><div class="phase-name">AI P&S Analysis</div><div class="phase-duration">2 min · HumanOS processing</div></div>
+              <div class="phase-status pend">Pending</div>
+            </div>
+          </div>
+        </div>
+
+        <button class="start-btn" onclick="startMeasure()">
+          <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          Begin ANS Measurement
+        </button>
+        <div class="scroll-hint">scroll for more ↓</div>
+      </div>
+
+      <!-- ===== DEVICES ===== -->
+      <div class="screen" id="screen-devices">
+        <div class="section-label" style="padding-top:8px;">CONNECTED HARDWARE</div>
+
+        <div class="device-card">
+          <div class="device-icon watch">⌚</div>
+          <div class="device-info">
+            <div class="device-name">Apple Watch Series 10</div>
+            <div class="device-sub">PPG · ECG · Accel · SpO2</div>
+            <div class="device-status">
+              <div class="status-dot connected"></div>
+              <span class="status-label connected">Connected · BT 5.3</span>
+            </div>
+          </div>
+          <div class="device-signal">
+            <div class="signal-bar active" style="height:5px"></div>
+            <div class="signal-bar active" style="height:8px"></div>
+            <div class="signal-bar active" style="height:12px"></div>
+            <div class="signal-bar active" style="height:16px"></div>
+          </div>
+        </div>
+
+        <div class="device-card">
+          <div class="device-icon chest">💓</div>
+          <div class="device-info">
+            <div class="device-name">Polar H10 Chest Strap</div>
+            <div class="device-sub">Clinical ECG · 500Hz · RR Interval</div>
+            <div class="device-status">
+              <div class="status-dot connected"></div>
+              <span class="status-label connected">Connected · BLE + ANT+</span>
+            </div>
+          </div>
+          <div class="device-signal">
+            <div class="signal-bar active" style="height:5px"></div>
+            <div class="signal-bar active" style="height:8px"></div>
+            <div class="signal-bar active" style="height:12px"></div>
+            <div class="signal-bar active" style="height:16px"></div>
+          </div>
+        </div>
+
+        <div class="device-card">
+          <div class="device-icon nfc">🧬</div>
+          <div class="device-info">
+            <div class="device-name">PhysioPS NFC BioFabric™</div>
+            <div class="device-sub">6-sensor compression · NFC powered</div>
+            <div class="device-status">
+              <div class="status-dot searching"></div>
+              <span class="status-label searching">Searching via NFC…</span>
+            </div>
+          </div>
+          <div class="device-signal">
+            <div class="signal-bar" style="height:5px"></div>
+            <div class="signal-bar" style="height:8px"></div>
+            <div class="signal-bar" style="height:12px"></div>
+            <div class="signal-bar" style="height:16px"></div>
+          </div>
+        </div>
+
+        <div class="device-card">
+          <div class="device-icon watch">🏃</div>
+          <div class="device-info">
+            <div class="device-name">Garmin HRM-Pro+</div>
+            <div class="device-sub">Running dynamics · Lactate</div>
+            <div class="device-status">
+              <div class="status-dot offline"></div>
+              <span class="status-label" style="color:var(--muted)">Not paired</span>
+            </div>
+          </div>
+          <div class="device-signal">
+            <div class="signal-bar" style="height:5px"></div>
+            <div class="signal-bar" style="height:8px"></div>
+            <div class="signal-bar" style="height:12px"></div>
+            <div class="signal-bar" style="height:16px"></div>
+          </div>
+        </div>
+
+        <div class="edge-card">
+          <div class="edge-title">🔮 HumanOS Edge Compute</div>
+          <div class="edge-stats">
+            <div class="edge-stat"><div class="edge-val">2.1ms</div><div class="edge-lab">Inference</div></div>
+            <div class="edge-stat"><div class="edge-val">97.4%</div><div class="edge-lab">Accuracy</div></div>
+            <div class="edge-stat"><div class="edge-val">PQC</div><div class="edge-lab">Encryption</div></div>
+          </div>
+        </div>
+
+        <div style="margin:0 20px 16px;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:16px;">
+          <div style="font-size:12px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">SENSOR FUSION ENGINE</div>
+          <div style="font-size:12px;color:var(--muted);line-height:1.6;">HumanOS fuses multi-source signals using adaptive Kalman filtering + ANS-specific neural models trained on 8,000+ clinical patients. 50+ autonomic conditions detected in real-time.</div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;">
+            <span style="background:rgba(0,212,200,0.1);border:1px solid rgba(0,212,200,0.2);border-radius:20px;padding:3px 8px;font-size:10px;color:var(--teal);">FDA 510(k) Cleared</span>
+            <span style="background:rgba(255,106,47,0.1);border:1px solid rgba(255,106,47,0.2);border-radius:20px;padding:3px 8px;font-size:10px;color:var(--orange);">CE Mark</span>
+            <span style="background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.2);border-radius:20px;padding:3px 8px;font-size:10px;color:#a78bfa;">HIPAA Secure</span>
+            <span style="background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.2);border-radius:20px;padding:3px 8px;font-size:10px;color:#34d399;">ISO 13485</span>
+          </div>
+        </div>
+        <div class="scroll-hint">scroll for more ↓</div>
+      </div>
+
+      <!-- ===== INSIGHTS ===== -->
+      <div class="screen" id="screen-insights">
+        <div class="section-label" style="padding-top:8px;">AI DIAGNOSTIC INSIGHTS</div>
+
+        <div class="insight-card good">
+          <div class="insight-icon good">🟢</div>
+          <div class="insight-title">Parasympathetic Dominance Confirmed</div>
+          <div class="insight-body">Your RFa (respiratory frequency activity) reading of 687 ms² indicates strong vagal tone. This represents optimal recovery state — parasympathetic nervous system is actively down-regulating sympathetic activation from yesterday's training load.</div>
+          <div class="insight-tag">✦ P-Branch Active · RMSSD 76ms</div>
+        </div>
+
+        <div class="insight-card warn">
+          <div class="insight-icon warn">⚠️</div>
+          <div class="insight-title">Mild Orthostatic Sympathetic Response</div>
+          <div class="insight-body">LFa (low frequency activity) shows mild elevation at 412 ms² vs. your 30-day mean of 380 ms². This is consistent with post-exercise sympathetic rebound. Monitor for 24h — if LFa exceeds 480 ms², consider scheduling a recovery day.</div>
+          <div class="insight-tag">⚡ S-Branch Monitor · LF 412ms²</div>
+        </div>
+
+        <div class="insight-card info">
+          <div class="insight-icon info">🔮</div>
+          <div class="insight-title">HumanOS Neural Engine Prediction</div>
+          <div class="insight-body">Based on current P&S dual-branch analysis, your ANS age is estimated 8 years younger than chronological. 94% probability of high performance output in next 6-hour window. Cognitive optimization window: now → 3pm.</div>
+          <div class="insight-tag">⬡ AntimatterAI · 97.4% confidence</div>
+        </div>
+
+        <div class="heatmap-card">
+          <div class="heatmap-title">7-DAY READINESS HEATMAP</div>
+          <div class="heatmap-grid">
+            <div class="heatmap-day" style="background:rgba(255,106,47,0.15)"><div class="heatmap-day-name">MON</div><div class="heatmap-day-score" style="color:var(--orange)">61</div></div>
+            <div class="heatmap-day" style="background:rgba(255,106,47,0.12)"><div class="heatmap-day-name">TUE</div><div class="heatmap-day-score" style="color:var(--orange)">58</div></div>
+            <div class="heatmap-day" style="background:rgba(251,191,36,0.15)"><div class="heatmap-day-name">WED</div><div class="heatmap-day-score" style="color:#fbbf24">74</div></div>
+            <div class="heatmap-day" style="background:rgba(0,212,200,0.15)"><div class="heatmap-day-name">THU</div><div class="heatmap-day-score" style="color:var(--teal)">82</div></div>
+            <div class="heatmap-day" style="background:rgba(52,211,153,0.15)"><div class="heatmap-day-name">FRI</div><div class="heatmap-day-score" style="color:#34d399">89</div></div>
+            <div class="heatmap-day" style="background:rgba(0,212,200,0.12)"><div class="heatmap-day-name">SAT</div><div class="heatmap-day-score" style="color:var(--teal)">85</div></div>
+            <div class="heatmap-day" style="background:rgba(0,212,200,0.2)"><div class="heatmap-day-name">SUN</div><div class="heatmap-day-score" style="color:var(--teal)">88</div></div>
+          </div>
+        </div>
+
+        <div class="section-label">VS. WELLTORY CAPABILITIES</div>
+        <div class="compare-table">
+          <div class="compare-header">
+            <span>Feature</span>
+            <span class="physio">PhysioPS</span>
+            <span>Welltory</span>
+          </div>
+          <div class="compare-row"><span class="compare-feature">Dual P&S Branch Isolation</span><span class="compare-cell has">✓</span><span class="compare-cell no">✗</span></div>
+          <div class="compare-row"><span class="compare-feature">FDA 510(k) Cleared</span><span class="compare-cell has">✓</span><span class="compare-cell no">✗</span></div>
+          <div class="compare-row"><span class="compare-feature">Clinical-Grade ECG (500Hz)</span><span class="compare-cell has">✓</span><span class="compare-cell no">✗</span></div>
+          <div class="compare-row"><span class="compare-feature">NFC Fabric Wearable</span><span class="compare-cell has">✓</span><span class="compare-cell no">✗</span></div>
+          <div class="compare-row"><span class="compare-feature">50+ ANS Conditions Detected</span><span class="compare-cell has">✓</span><span class="compare-cell no">✗</span></div>
+          <div class="compare-row"><span class="compare-feature">HRV Measurement</span><span class="compare-cell has">✓</span><span class="compare-cell has">✓</span></div>
+          <div class="compare-row"><span class="compare-feature">AI Neural Engine</span><span class="compare-cell has">✓</span><span class="compare-cell no">✗</span></div>
+          <div class="compare-row"><span class="compare-feature">Post-Quantum Encryption</span><span class="compare-cell has">✓</span><span class="compare-cell no">✗</span></div>
+        </div>
+        <div class="scroll-hint">scroll for more ↓</div>
+      </div>
+    </div><!-- /screens -->
+
+    <!-- BOTTOM NAV -->
+    <nav class="bottom-nav">
+      <button class="nav-item active" onclick="switchTab(0,this)" id="nav0">
+        <div class="nav-icon-wrap"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+        <span class="nav-label">Home</span>
+      </button>
+      <button class="nav-item" onclick="switchTab(1,this)" id="nav1">
+        <div class="nav-icon-wrap"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 12 L10.5 9 L12.5 14 L15 11 L16 12"/></svg></div>
+        <span class="nav-label">ANS</span>
+      </button>
+      <button class="nav-item" onclick="switchTab(2,this)" id="nav2">
+        <div class="nav-icon-wrap"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div>
+        <span class="nav-label">Measure</span>
+      </button>
+      <button class="nav-item" onclick="switchTab(3,this)" id="nav3">
+        <div class="nav-icon-wrap"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></svg></div>
+        <span class="nav-label">Devices</span>
+      </button>
+      <button class="nav-item" onclick="switchTab(4,this)" id="nav4">
+        <div class="nav-icon-wrap"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
+        <span class="nav-label">Insights</span>
+      </button>
+    </nav>
+  </div>
+</div>
+
+<script>
+// ===== PARTICLE CANVAS =====
+const pCanvas = document.getElementById('particleCanvas');
+const pCtx = pCanvas.getContext('2d');
+let particles = [];
+function resizeCanvas(){pCanvas.width=window.innerWidth;pCanvas.height=window.innerHeight;}
+resizeCanvas();
+window.addEventListener('resize',resizeCanvas);
+for(let i=0;i<55;i++){particles.push({x:Math.random()*window.innerWidth,y:Math.random()*window.innerHeight,vx:(Math.random()-0.5)*0.3,vy:(Math.random()-0.5)*0.3,r:Math.random()*2+0.5,c:Math.random()>0.5?'rgba(0,212,200,':'rgba(255,106,47,'});}
+function animParticles(){pCtx.clearRect(0,0,pCanvas.width,pCanvas.height);particles.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>pCanvas.width)p.vx*=-1;if(p.y<0||p.y>pCanvas.height)p.vy*=-1;pCtx.beginPath();pCtx.arc(p.x,p.y,p.r,0,Math.PI*2);pCtx.fillStyle=p.c+'0.6)';pCtx.fill();});particles.forEach((a,i)=>{particles.slice(i+1).forEach(b=>{const d=Math.hypot(a.x-b.x,a.y-b.y);if(d<100){pCtx.beginPath();pCtx.moveTo(a.x,a.y);pCtx.lineTo(b.x,b.y);pCtx.strokeStyle=`rgba(0,212,200,${0.08*(1-d/100)})`;pCtx.lineWidth=0.5;pCtx.stroke();}});});requestAnimationFrame(animParticles);}
+animParticles();
+
+// ===== TAB NAVIGATION =====
+const screenIds=['screen-home','screen-ans','screen-measure','screen-devices','screen-insights'];
+function switchTab(idx,btn){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById(screenIds[idx]).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ===== GAUGE ANIMATION =====
+function animateGauges(){
+  const circ=217;
+  document.getElementById('gaugeSymp').setAttribute('stroke-dasharray',`${circ*0.34} ${circ}`);
+  document.getElementById('gaugePara').setAttribute('stroke-dasharray',`${217*0.46*0.66} ${217*0.46}`);
+  document.getElementById('homeScore').textContent='88';
+  setTimeout(()=>{
+    document.getElementById('paraBar').style.width='66%';
+    document.getElementById('sympBar').style.width='34%';
+    document.getElementById('vagalBar').style.width='78%';
+    document.getElementById('cohBar').style.width='92%';
+  },400);
+}
+setTimeout(animateGauges,600);
+
+// ===== LIVE ECG =====
+const ecgCanvas=document.getElementById('ecgCanvas');
+const eCtx=ecgCanvas.getContext('2d');
+ecgCanvas.width=ecgCanvas.offsetWidth*2;ecgCanvas.height=120;
+let ecgData=[];let ecgX=0;
+const ecgTemplate=[0,0,0,0,-2,0,0,18,-10,2,1,1,0,0,-1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+let templateIdx=0;let beatCooldown=0;
+function drawECG(){
+  ecgX+=2;
+  if(ecgX>ecgCanvas.width)ecgX=0;
+  let val=0;
+  if(beatCooldown<=0){val=ecgTemplate[templateIdx]*2;templateIdx++;if(templateIdx>=ecgTemplate.length){templateIdx=0;beatCooldown=Math.floor(60+(Math.random()*10-5));}}else{beatCooldown--;}
+  ecgData.push({x:ecgX,y:60+val*(ecgX%2?1.1:1)});
+  if(ecgData.length>ecgCanvas.width/2)ecgData.shift();
+  eCtx.clearRect(0,0,ecgCanvas.width,ecgCanvas.height);
+  if(ecgData.length<2)return;
+  eCtx.shadowColor='#00d4c8';eCtx.shadowBlur=8;
+  eCtx.beginPath();eCtx.strokeStyle='#00d4c8';eCtx.lineWidth=2;
+  eCtx.moveTo(ecgData[0].x,ecgData[0].y);
+  ecgData.forEach(p=>eCtx.lineTo(p.x,p.y));
+  eCtx.stroke();eCtx.shadowBlur=0;
+  // Sweep line
+  eCtx.beginPath();eCtx.strokeStyle='rgba(0,212,200,0.3)';eCtx.lineWidth=1;
+  eCtx.moveTo(ecgX,0);eCtx.lineTo(ecgX,ecgCanvas.height);eCtx.stroke();
+  requestAnimationFrame(drawECG);
+}
+drawECG();
+
+// ===== LIVE BPM =====
+let baseBPM=62;
+setInterval(()=>{
+  const bpm=baseBPM+Math.floor(Math.random()*6-3);
+  document.getElementById('liveBPM').textContent=bpm;
+  document.getElementById('kpiBPM').textContent=bpm;
+},2000);
+
+// ===== DEVICE ACTIONS =====
+function selectDev(el){
+  document.querySelectorAll('.dev-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+}
+function startMeasure(){
+  const btn=document.querySelector('.start-btn');
+  btn.innerHTML='<svg viewBox="0 0 24 24" style="width:20px;height:20px;stroke:#000;fill:none;stroke-width:2.5"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg> Measuring…';
+  btn.style.background='linear-gradient(135deg,var(--orange),#cc4400)';
+  btn.style.boxShadow='0 8px 32px rgba(255,106,47,0.3)';
+  setTimeout(()=>{
+    btn.innerHTML='<svg viewBox="0 0 24 24" style="width:20px;height:20px;stroke:#000;fill:none;stroke-width:2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg> Begin ANS Measurement';
+    btn.style.background='linear-gradient(135deg,var(--teal),#00b4aa)';
+    btn.style.boxShadow='0 8px 32px rgba(0,212,200,0.3)';
+  },4000);
+}
+</script>
+</body>
+</html>
