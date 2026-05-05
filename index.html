@@ -1,822 +1,1377 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>PhysioPS HumanOS — ANS Intelligence</title>
-<link href="https://api.fontshare.com/v2/css?f[]=space-grotesk@300,400,500,600,700&f[]=general-sans@400,500,600&display=swap" rel="stylesheet">
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>PhysioPS × Welltory — Autonomic Alliance Brief 2026</title>
+<meta name="description" content="PhysioPS partnership brief for Welltory. FDA-cleared P&S monitoring + Welltory AI copilot = the autonomic operating system for 90M+ undiagnosed Americans."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
+<link href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@400,500,700,800,900&display=swap" rel="stylesheet"/>
 <style>
-:root {
-  --teal: #00d4c8;
-  --teal-dim: rgba(0,212,200,0.15);
-  --teal-glow: rgba(0,212,200,0.4);
-  --orange: #ff6a2f;
-  --orange-dim: rgba(255,106,47,0.15);
-  --orange-glow: rgba(255,106,47,0.4);
-  --bg: #04060e;
-  --bg2: #070a14;
-  --bg3: #0a0f1c;
-  --surface: rgba(255,255,255,0.04);
-  --surface2: rgba(255,255,255,0.07);
-  --border: rgba(255,255,255,0.08);
-  --text: #e8eaf2;
-  --muted: #6b7280;
-  --faint: #374151;
-  --font: 'Space Grotesk', sans-serif;
+:root{
+  --accent:#00e5ff;--accent-dim:#00b8cc;--accent-blue:#0077ff;
+  --accent-glow:rgba(0,229,255,0.15);--accent-glow-strong:rgba(0,229,255,0.30);
+  --bg:#060a10;--bg-elevated:#0c1220;--bg-card:#0f1628;--bg-card-hover:#131c34;
+  --surface:#111827;--surface-2:#1a2540;
+  --text:#e8edf5;--text-muted:#8892a8;--text-faint:#4a5568;
+  --border:rgba(255,255,255,0.06);--border-accent:rgba(0,229,255,0.15);
+  --gradient-brand:linear-gradient(135deg,#00e5ff 0%,#0077ff 100%);
+  --gradient-hero:linear-gradient(180deg,rgba(6,10,16,.3) 0%,rgba(6,10,16,.7) 40%,rgba(6,10,16,.95) 80%,#060a10 100%);
+  --gradient-neural:linear-gradient(90deg,transparent 0%,#00e5ff 20%,#0077ff 50%,#00e5ff 80%,transparent 100%);
+  --color-parasympathetic:#00e5ff;--color-sympathetic:#0077ff;--color-balance:#7c3aed;
+  --color-hrv:#10b981;--color-warning:#f59e0b;--color-danger:#ef4444;--color-success:#22c55e;
+  --font-display:'Cabinet Grotesk','Inter',sans-serif;
+  --font-body:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+  --font-mono:'JetBrains Mono','Fira Code',monospace;
+  --r:clamp(0rem,0.7rem + 0.25vw,0.875rem);
+  --space-4:1rem;--space-6:1.5rem;--space-8:2rem;--space-12:3rem;--space-16:4rem;--space-20:5rem;
 }
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:var(--font);}
-body{display:flex;flex-direction:column;align-items:center;justify-content:center;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+body{min-height:100vh;font-family:var(--font-body);color:var(--text);background:var(--bg);overflow-x:hidden;line-height:1.6}
 
-/* PHONE FRAME */
-.phone-wrapper{position:relative;width:100vw;height:100vh;max-width:430px;max-height:932px;display:flex;flex-direction:column;overflow:hidden;background:var(--bg);}
-@media(min-width:500px){.phone-wrapper{border-radius:48px;box-shadow:0 40px 120px rgba(0,0,0,0.8),0 0 0 1px rgba(255,255,255,0.08),inset 0 0 0 1px rgba(255,255,255,0.04);}}
+/* ============ PARTICLE CANVAS ============ */
+#particleCanvas{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.55}
 
-/* CANVAS BG */
-#particleCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;}
+/* ============ LOADER ============ */
+#loader{
+  position:fixed;inset:0;z-index:100;
+  display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(circle at 20% 0%,#071216 0,#060a10 50%,#04080e 100%);
+  transition:opacity .9s cubic-bezier(.16,1,.3,1),visibility .9s,transform .9s cubic-bezier(.16,1,.3,1);
+}
+#loader.hide{opacity:0;visibility:hidden;transform:translateY(-4%)}
+.loader-card{
+  width:min(500px,92vw);border-radius:32px;padding:32px 28px 26px;position:relative;overflow:hidden;
+  background:radial-gradient(circle at 0 0,rgba(0,229,255,.25) 0,transparent 55%),
+             radial-gradient(circle at 100% 100%,rgba(0,119,255,.22) 0,transparent 55%),
+             var(--bg-card);
+  border:1px solid rgba(0,229,255,.35);
+  box-shadow:0 0 60px rgba(0,229,255,.5),0 40px 120px rgba(0,0,0,1),inset 0 1px 0 rgba(255,255,255,.12);
+}
+.loader-orbit{
+  position:absolute;inset:-50%;
+  background:conic-gradient(from 200deg,rgba(0,229,255,.18),transparent 38%,rgba(0,119,255,.2),transparent 78%,rgba(0,229,255,.22));
+  animation:spin 12s linear infinite;mix-blend-mode:screen;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loader-inner{position:relative;z-index:1}
+.loader-logo{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.loader-logo-svg{animation:logoPulse 2s ease-in-out infinite}
+@keyframes logoPulse{0%,100%{filter:drop-shadow(0 0 6px var(--accent))}50%{filter:drop-shadow(0 0 14px var(--accent))}}
+.loader-wordmark{font-family:var(--font-display);font-size:1.15rem;font-weight:800;letter-spacing:-.02em}
+.loader-wordmark span{background:var(--gradient-brand);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.loader-tag{font-family:var(--font-mono);font-size:.72rem;text-transform:uppercase;letter-spacing:.18em;color:var(--text-muted);margin-bottom:6px}
+.loader-title{font-family:var(--font-display);font-size:1.1rem;font-weight:700;margin-bottom:6px}
+.loader-sub{font-size:.84rem;color:var(--text-muted);max-width:28rem}
+.loader-bar{margin-top:18px;height:5px;border-radius:999px;background:rgba(0,0,0,.6);overflow:hidden;box-shadow:inset 0 0 0 1px rgba(0,229,255,.4)}
+.loader-fill{height:100%;background:var(--gradient-brand);transform-origin:left;animation:fill 2.6s ease-in-out infinite;border-radius:999px}
+@keyframes fill{0%{transform:scaleX(.04)}40%{transform:scaleX(1)}60%{transform:scaleX(.6)}100%{transform:scaleX(1)}}
 
-/* CONTENT */
-.app-content{position:relative;z-index:1;flex:1;overflow:hidden;display:flex;flex-direction:column;}
+/* ============ NAV ============ */
+.header{
+  position:sticky;top:0;z-index:50;padding:14px 0 10px;
+  backdrop-filter:blur(24px) saturate(160%);
+  background:linear-gradient(to bottom,rgba(6,10,16,.98),rgba(6,10,16,.9),transparent);
+  border-bottom:1px solid var(--border);
+  transition:background .3s;
+}
+.nav-container{max-width:1400px;margin:0 auto;padding:0 clamp(20px,4vw,60px);display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text)}
+.logo-text{font-family:var(--font-display);font-size:1.05rem;font-weight:800;letter-spacing:-.02em}
+.logo-accent{background:var(--gradient-brand);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.nav-links{display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+.nav-link{font-size:.82rem;font-weight:500;color:var(--text-muted);text-decoration:none;padding:7px 13px;border-radius:8px;transition:color .2s,background .2s;font-family:var(--font-body)}
+.nav-link:hover{color:var(--text);background:rgba(255,255,255,.06)}
+.nav-cta{background:var(--gradient-brand);color:#060a10!important;border-radius:8px;font-weight:700;font-size:.8rem!important;padding:7px 16px!important}
+.nav-cta:hover{opacity:.88}
 
-/* HEADER */
-.app-header{padding:52px 20px 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
-.logo-mark{display:flex;align-items:center;gap:10px;}
-.logo-icon{width:36px;height:36px;}
-.logo-text{font-size:18px;font-weight:700;letter-spacing:-0.5px;}
-.logo-text span{color:var(--teal);}
-.header-right{display:flex;align-items:center;gap:12px;}
-.live-badge{display:flex;align-items:center;gap:6px;background:rgba(0,212,200,0.1);border:1px solid rgba(0,212,200,0.25);border-radius:20px;padding:6px 12px;font-size:11px;font-weight:600;letter-spacing:1px;color:var(--teal);}
-.live-dot{width:6px;height:6px;border-radius:50%;background:var(--teal);animation:pulse-dot 1.4s ease-in-out infinite;}
-@keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.5;transform:scale(0.7);}}
-.avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--orange));display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#000;}
+/* ============ CONTAINER ============ */
+.container{max-width:1400px;margin:0 auto;padding:0 clamp(20px,4vw,60px);position:relative;z-index:1}
 
-/* SCREENS */
-.screens{flex:1;overflow:hidden;position:relative;}
-.screen{position:absolute;top:0;left:0;width:100%;height:100%;overflow-y:auto;padding:0 0 90px;opacity:0;transform:translateX(30px);transition:opacity 0.4s cubic-bezier(0.16,1,0.3,1),transform 0.4s cubic-bezier(0.16,1,0.3,1);pointer-events:none;}
-.screen.active{opacity:1;transform:translateX(0);pointer-events:all;}
-.screen::-webkit-scrollbar{display:none;}
+/* ============ HERO ============ */
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;padding:120px 0 80px}
+.hero-bg{position:absolute;inset:0;z-index:0}
+.hero-bg-image{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(circle at 15% 20%,rgba(0,229,255,.28) 0,transparent 55%),
+    radial-gradient(circle at 80% 10%,rgba(0,119,255,.24) 0,transparent 60%),
+    radial-gradient(circle at 60% 80%,rgba(124,58,237,.22) 0,transparent 55%);
+  opacity:.9;
+}
+.hero-bg-grid{
+  position:absolute;inset:0;
+  background-image:linear-gradient(rgba(0,229,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,.025) 1px,transparent 1px);
+  background-size:60px 60px;
+  mask-image:radial-gradient(ellipse at 50% 50%,black 20%,transparent 80%);
+}
+.hero-overlay{position:absolute;inset:0;background:var(--gradient-hero)}
+.hero-content{max-width:900px;margin:0 auto;text-align:center;position:relative;z-index:1}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:10px;padding:6px 18px 6px 8px;
+  border-radius:999px;border:1px solid rgba(0,229,255,.35);
+  background:rgba(6,10,16,.92);box-shadow:0 0 0 1px rgba(0,229,255,.15);
+  font-family:var(--font-mono);font-size:.74rem;text-transform:uppercase;letter-spacing:.16em;color:var(--text-muted);
+  margin-bottom:20px;
+}
+.badge-dot{
+  width:20px;height:20px;border-radius:999px;
+  background:radial-gradient(circle at 30% 25%,var(--accent) 0,transparent 60%),radial-gradient(circle at 70% 75%,var(--accent-blue) 0,transparent 70%);
+  box-shadow:0 0 16px rgba(0,229,255,.9);
+  position:relative;flex-shrink:0;
+}
+.badge-dot::after{content:"";position:absolute;inset:-6px;border-radius:inherit;border:2px solid rgba(0,229,255,.5);animation:ping 1.8s cubic-bezier(.21,.6,.35,1) infinite}
+@keyframes ping{0%{transform:scale(.5);opacity:.9}70%{transform:scale(1.5);opacity:0}100%{transform:scale(1.5);opacity:0}}
+.hero-tag-row{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.hero-tag{font-family:var(--font-mono);font-size:.72rem;text-transform:uppercase;letter-spacing:.15em;color:var(--accent);padding:3px 10px;border:1px solid var(--border-accent);border-radius:4px}
+.hero-title{font-family:var(--font-display);font-size:clamp(2.8rem,.5rem + 6.5vw,7rem);font-weight:900;letter-spacing:-.04em;line-height:1.0;margin-bottom:20px;color:var(--text)}
+.gradient-text{background:var(--gradient-brand);-webkit-background-clip:text;-webkit-text-fill-color:transparent;display:inline}
+.hero-subtitle{font-size:clamp(1rem,1.1vw,1.25rem);color:var(--text-muted);max-width:640px;margin:0 auto 28px;line-height:1.7}
+.hero-actions{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;margin-bottom:48px}
+.btn{display:inline-flex;align-items:center;gap:8px;border-radius:10px;font-family:var(--font-body);font-weight:600;font-size:.88rem;text-decoration:none;transition:all .22s;cursor:pointer;border:none}
+.btn-primary{background:var(--gradient-brand);color:#060a10;padding:12px 28px;box-shadow:0 0 20px rgba(0,229,255,.5),0 8px 30px rgba(0,0,0,.8)}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 0 32px rgba(0,229,255,.8),0 12px 40px rgba(0,0,0,.9)}
+.btn-ghost{background:transparent;color:var(--text);padding:11px 24px;border:1px solid var(--border)}
+.btn-ghost:hover{border-color:var(--border-accent);background:var(--accent-glow);transform:translateY(-1px)}
+.hero-stats{display:flex;justify-content:center;gap:48px;flex-wrap:wrap;padding:24px;background:rgba(15,22,40,.6);border:1px solid var(--border);border-radius:20px;backdrop-filter:blur(16px)}
+.stat{text-align:center}
+.stat-number{font-family:var(--font-display);font-size:clamp(1.6rem,3vw,2.4rem);font-weight:900;background:var(--gradient-brand);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1}
+.stat-suffix{font-family:var(--font-display);font-size:clamp(1.2rem,2vw,1.8rem);font-weight:900;background:var(--gradient-brand);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.stat-label{display:block;font-size:.8rem;color:var(--text-muted);margin-top:4px;font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.1em}
+.scroll-indicator{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;z-index:1}
+.scroll-line{width:1px;height:60px;background:var(--gradient-neural);animation:scrollPulse 2s ease-in-out infinite}
+@keyframes scrollPulse{0%,100%{opacity:.4;transform:scaleY(.8)}50%{opacity:1;transform:scaleY(1)}}
 
-/* BOTTOM NAV */
-.bottom-nav{position:absolute;bottom:0;left:0;width:100%;padding:12px 8px 28px;display:flex;justify-content:space-around;background:linear-gradient(to top,rgba(4,6,14,0.98) 0%,rgba(4,6,14,0.9) 80%,transparent);z-index:100;backdrop-filter:blur(20px);}
-.nav-item{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 16px;border-radius:16px;cursor:pointer;transition:all 0.3s;border:none;background:none;color:var(--muted);font-family:var(--font);}
-.nav-item svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
-.nav-label{font-size:10px;font-weight:600;letter-spacing:0.5px;}
-.nav-item.active{color:var(--teal);}
-.nav-item.active .nav-icon-wrap{background:rgba(0,212,200,0.12);}
-.nav-icon-wrap{padding:6px;border-radius:12px;transition:background 0.3s;}
+/* ============ SECTION BASE ============ */
+.section{padding:clamp(60px,8vw,120px) 0;position:relative;z-index:1}
+.section-dark{background:var(--bg-elevated)}
+.section-header{text-align:center;max-width:720px;margin:0 auto var(--space-12)}
+.section-tag{font-family:var(--font-mono);font-size:.74rem;text-transform:uppercase;letter-spacing:.18em;color:var(--accent);margin-bottom:12px;display:block}
+.section-title{font-family:var(--font-display);font-size:clamp(2rem,1.2rem + 2.5vw,3.5rem);font-weight:800;letter-spacing:-.03em;line-height:1.1;color:var(--text);margin-bottom:16px}
+.section-desc{font-size:clamp(1rem,.9rem + .3vw,1.15rem);color:var(--text-muted);line-height:1.7}
 
-/* === HOME SCREEN === */
-.home-pad{padding:0 20px;}
-.greeting{font-size:14px;color:var(--muted);margin-bottom:2px;}
-.greeting strong{color:var(--text);}
-.readiness-hero{margin:16px 0;background:var(--surface);border:1px solid var(--border);border-radius:28px;padding:24px;position:relative;overflow:hidden;}
-.rh-glow{position:absolute;top:-40px;right:-40px;width:200px;height:200px;background:radial-gradient(circle,rgba(0,212,200,0.12) 0%,transparent 70%);pointer-events:none;}
-.rh-title{font-size:12px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:16px;}
-.rh-main{display:flex;align-items:center;gap:20px;}
-.rh-gauge-wrap{position:relative;flex-shrink:0;}
-.rh-gauge{width:130px;height:130px;}
-.gauge-bg{fill:none;stroke:rgba(255,255,255,0.05);stroke-width:8;}
-.gauge-symp{fill:none;stroke:var(--orange);stroke-width:8;stroke-linecap:round;transform-origin:65px 65px;transform:rotate(-130deg);transition:stroke-dasharray 1.5s cubic-bezier(0.16,1,0.3,1);filter:drop-shadow(0 0 6px var(--orange));}
-.gauge-para{fill:none;stroke:var(--teal);stroke-width:8;stroke-linecap:round;transform-origin:65px 65px;transform:rotate(-130deg);transition:stroke-dasharray 1.5s cubic-bezier(0.16,1,0.3,1);filter:drop-shadow(0 0 8px var(--teal));}
-.rh-score{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;}
-.rh-num{font-size:34px;font-weight:700;line-height:1;color:var(--text);}
-.rh-unit{font-size:10px;color:var(--muted);letter-spacing:1px;}
-.rh-stats{flex:1;}
-.rh-stat{margin-bottom:12px;}
-.rh-stat-label{font-size:11px;color:var(--muted);margin-bottom:4px;display:flex;justify-content:space-between;}
-.rh-stat-label span{color:var(--text);font-weight:600;}
-.stat-bar-bg{height:4px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden;}
-.stat-bar-fill{height:100%;border-radius:4px;transition:width 1.5s cubic-bezier(0.16,1,0.3,1);}
-.stat-bar-fill.t{background:linear-gradient(90deg,var(--teal),rgba(0,212,200,0.6));box-shadow:0 0 8px var(--teal-glow);}
-.stat-bar-fill.o{background:linear-gradient(90deg,var(--orange),rgba(255,106,47,0.6));box-shadow:0 0 8px var(--orange-glow);}
-.stat-bar-fill.p{background:linear-gradient(90deg,#a78bfa,rgba(167,139,250,0.6));}
+/* ============ STATS BAND ============ */
+.stats-band{
+  padding:var(--space-8) 0;background:var(--bg-elevated);
+  border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+}
+.stats-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--border)}
+@media(max-width:900px){.stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:500px){.stats-grid{grid-template-columns:minmax(0,1fr)}}
+.stat-block{
+  background:var(--bg-elevated);padding:28px 24px;text-align:center;
+  opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease;
+}
+.stat-block.show{opacity:1;transform:translateY(0)}
+.stat-block-number{font-family:var(--font-display);font-size:clamp(2rem,4vw,3rem);font-weight:900;background:var(--gradient-brand);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1;margin-bottom:8px}
+.stat-block-label{font-family:var(--font-mono);font-size:.72rem;text-transform:uppercase;letter-spacing:.14em;color:var(--text-muted);margin-bottom:4px}
+.stat-block-caption{font-size:.84rem;color:var(--text-faint);max-width:180px;margin:0 auto}
 
-.kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0 20px 16px;}
-.kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:16px;position:relative;overflow:hidden;}
-.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;border-radius:20px 20px 0 0;}
-.kpi-card.t::before{background:linear-gradient(90deg,var(--teal),transparent);}
-.kpi-card.o::before{background:linear-gradient(90deg,var(--orange),transparent);}
-.kpi-card.p::before{background:linear-gradient(90deg,#a78bfa,transparent);}
-.kpi-card.g::before{background:linear-gradient(90deg,#34d399,transparent);}
-.kpi-label{font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;}
-.kpi-value{font-size:28px;font-weight:700;line-height:1;}
-.kpi-value.t{color:var(--teal);}
-.kpi-value.o{color:var(--orange);}
-.kpi-value.p{color:#a78bfa;}
-.kpi-value.g{color:#34d399;}
-.kpi-unit{font-size:11px;color:var(--muted);}
-.kpi-delta{font-size:11px;margin-top:4px;}
-.kpi-delta.up{color:#34d399;}
-.kpi-delta.down{color:#f87171;}
+/* ============ CONDITIONS MARQUEE ============ */
+.conditions-section{padding:var(--space-12) 0;overflow:hidden;position:relative;z-index:1}
+.conditions-section::before,.conditions-section::after{content:"";position:absolute;top:0;bottom:0;width:120px;z-index:2;pointer-events:none}
+.conditions-section::before{left:0;background:linear-gradient(90deg,var(--bg),transparent)}
+.conditions-section::after{right:0;background:linear-gradient(-90deg,var(--bg),transparent)}
+.conditions-track{display:flex;gap:12px;width:max-content;animation:marquee 35s linear infinite}
+.conditions-track-reverse{animation-direction:reverse;animation-duration:40s;margin-top:12px}
+@keyframes marquee{to{transform:translateX(-50%)}}
+.condition-pill{
+  white-space:nowrap;padding:8px 18px;border-radius:999px;
+  border:1px solid var(--border-accent);background:var(--accent-glow);
+  font-family:var(--font-mono);font-size:.76rem;color:var(--accent);letter-spacing:.1em;
+  flex-shrink:0;
+}
 
-.section-label{font-size:12px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;padding:0 20px;margin-bottom:10px;}
+/* ============ FEATURE GRID (ACT 1) ============ */
+.feature-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--border)}
+@media(max-width:900px){.feature-grid{grid-template-columns:repeat(1,minmax(0,1fr))}}
+.feature-card{
+  background:var(--bg-card);padding:32px 28px;
+  position:relative;overflow:hidden;
+  opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease,background .2s;
+}
+.feature-card.show{opacity:1;transform:translateY(0)}
+.feature-card:hover{background:var(--bg-card-hover)}
+.feature-card::before{
+  content:"";position:absolute;top:0;left:-60%;width:50%;height:3px;
+  background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:0;
+}
+.feature-card:hover::before{opacity:1;animation:sweep .9s cubic-bezier(.33,1,.68,1)}
+@keyframes sweep{from{left:-60%}to{left:120%}}
+.feature-icon{width:48px;height:48px;border-radius:12px;background:var(--accent-glow);display:flex;align-items:center;justify-content:center;margin-bottom:16px}
+.feature-card h3{font-family:var(--font-display);font-size:1.1rem;font-weight:700;margin-bottom:10px;color:var(--text)}
+.feature-card p{font-size:.9rem;color:var(--text-muted);line-height:1.7}
+.feature-card-large{grid-column:span 1}
+@media(min-width:900px){.feature-card-large{grid-column:span 1}}
 
-.ecg-card{margin:0 20px 16px;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:16px;overflow:hidden;}
-.ecg-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
-.ecg-title{font-size:13px;font-weight:600;}
-.ecg-bpm{font-size:22px;font-weight:700;color:var(--teal);}
-.ecg-bpm-unit{font-size:11px;color:var(--muted);}
-.ecg-canvas{width:100%;height:60px;display:block;}
+/* ============ SPLIT LAYOUT ============ */
+.split-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:80px;align-items:center}
+@media(max-width:900px){.split-layout{grid-template-columns:minmax(0,1fr);gap:40px}}
+.split-reverse{direction:rtl}.split-reverse>*{direction:ltr}
 
-.ai-insight{margin:0 20px 16px;background:linear-gradient(135deg,rgba(0,212,200,0.06),rgba(167,139,250,0.06));border:1px solid rgba(0,212,200,0.2);border-radius:20px;padding:16px;}
-.ai-label{font-size:10px;color:var(--teal);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:6px;}
-.ai-dot{width:5px;height:5px;border-radius:50%;background:var(--teal);animation:pulse-dot 1.4s ease-in-out infinite;}
-.ai-text{font-size:14px;line-height:1.5;color:var(--text);}
+/* ============ ARCHITECTURE ============ */
+.arch-wrapper{
+  border-radius:20px;overflow:hidden;
+  border:1px solid var(--border);background:var(--bg-card);
+}
+.arch-header{padding:20px 24px;background:var(--bg-elevated);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px}
+.arch-dots{display:flex;gap:6px}.arch-dots span{width:12px;height:12px;border-radius:999px}
+.arch-dots span:nth-child(1){background:#ef4444}
+.arch-dots span:nth-child(2){background:#f59e0b}
+.arch-dots span:nth-child(3){background:#22c55e}
+.arch-title-text{font-family:var(--font-mono);font-size:.8rem;color:var(--text-muted);letter-spacing:.1em}
+.arch-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;background:var(--border)}
+@media(max-width:1000px){.arch-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.arch-grid{grid-template-columns:minmax(0,1fr)}}
+.arch-block{
+  background:var(--bg-card);padding:18px 16px;position:relative;overflow:hidden;
+  border-bottom:1px solid var(--border);
+  opacity:0;transform:translateY(12px);transition:opacity .5s ease,transform .5s ease,background .2s;
+}
+.arch-block.show{opacity:1;transform:translateY(0)}
+.arch-block:hover{background:var(--bg-card-hover)}
+.arch-block::after{
+  content:"";position:absolute;inset:1px;border-radius:4px;
+  background:linear-gradient(135deg,rgba(255,255,255,.07),transparent 45%,transparent 55%,rgba(255,255,255,.08));
+  opacity:0;animation:shimmer 3.5s ease-in-out infinite;pointer-events:none;
+}
+@keyframes shimmer{0%,40%,100%{opacity:0}52%{opacity:1}}
+.arch-step{font-family:var(--font-mono);font-size:.68rem;color:var(--accent);text-transform:uppercase;letter-spacing:.14em;margin-bottom:6px}
+.arch-block-title{font-family:var(--font-display);font-size:.88rem;font-weight:700;color:var(--text);margin-bottom:6px}
+.arch-block-body{font-size:.8rem;color:var(--text-muted);line-height:1.6}
+.arch-owner{display:inline-block;margin-top:8px;padding:2px 8px;border-radius:4px;font-family:var(--font-mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase}
+.arch-owner.welltory{background:rgba(16,185,129,.15);color:#10b981;border:1px solid rgba(16,185,129,.3)}
+.arch-owner.physiops{background:var(--accent-glow);color:var(--accent);border:1px solid var(--border-accent)}
+.arch-owner.joint{background:rgba(124,58,237,.15);color:#a78bfa;border:1px solid rgba(124,58,237,.3)}
 
-/* === ANS SCREEN === */
-.venn-container{margin:12px 20px;position:relative;}
-.venn-svg{width:100%;height:240px;}
-.venn-label{font-family:var(--font);font-size:13px;font-weight:600;}
-.venn-pct{font-family:var(--font);font-size:28px;font-weight:700;}
-.venn-center-label{font-family:var(--font);font-size:11px;fill:rgba(255,255,255,0.8);font-weight:600;}
-.hrv-ring-card{margin:0 20px 16px;background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:20px;}
-.hrv-ring-title{font-size:13px;font-weight:600;color:var(--muted);margin-bottom:16px;text-align:center;letter-spacing:1px;text-transform:uppercase;}
-.hrv-ring-wrap{position:relative;width:160px;height:160px;margin:0 auto 16px;}
-.hrv-ring-svg{width:160px;height:160px;}
-.hrv-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;}
-.hrv-big{font-size:32px;font-weight:700;color:var(--teal);}
-.hrv-ms{font-size:12px;color:var(--muted);}
-.hrv-label{font-size:10px;color:var(--muted);margin-top:2px;letter-spacing:1px;}
-.hrv-metrics-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-.hrv-metric{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:10px 12px;}
-.hrv-metric-label{font-size:10px;color:var(--muted);letter-spacing:0.5px;margin-bottom:4px;}
-.hrv-metric-val{font-size:18px;font-weight:700;}
-.hrv-metric-val.t{color:var(--teal);}
-.hrv-metric-val.o{color:var(--orange);}
-.hrv-metric-val.p{color:#a78bfa;}
-.hrv-metric-val.g{color:#34d399;}
-.hrv-metric-unit{font-size:10px;color:var(--muted);}
+/* ============ EDGE COMPUTE ============ */
+.edge-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+@media(max-width:900px){.edge-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:500px){.edge-grid{grid-template-columns:minmax(0,1fr)}}
+.edge-card{
+  padding:24px 20px;border-radius:16px;
+  background:var(--bg-card);border:1px solid var(--border);
+  transition:border-color .2s,background .2s,transform .2s;
+  opacity:0;transform:translateY(18px);
+}
+.edge-card.show{opacity:1;transform:translateY(0)}
+.edge-card:hover{border-color:var(--border-accent);background:var(--bg-card-hover);transform:translateY(-2px)}
+.edge-icon{width:48px;height:48px;border-radius:12px;background:var(--accent-glow);display:flex;align-items:center;justify-content:center;margin-bottom:14px}
+.edge-card h3{font-family:var(--font-display);font-size:1rem;font-weight:700;margin-bottom:8px}
+.edge-card p{font-size:.86rem;color:var(--text-muted);line-height:1.6}
+.edge-stat-pill{
+  display:inline-flex;align-items:center;gap:6px;margin-top:10px;
+  padding:4px 10px;border-radius:999px;
+  background:var(--accent-glow-strong);border:1px solid var(--border-accent);
+  font-family:var(--font-mono);font-size:.72rem;color:var(--accent);letter-spacing:.08em;
+}
 
-.freq-domain{margin:0 20px 16px;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:16px;}
-.freq-title{font-size:12px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;}
-.freq-bar-row{margin-bottom:10px;}
-.freq-bar-label{display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px;}
-.freq-bar-label span:last-child{font-weight:600;}
-.freq-bar-bg{height:6px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden;}
-.freq-bar-fill{height:100%;border-radius:4px;}
-.vlf{background:linear-gradient(90deg,#a78bfa,rgba(167,139,250,0.5));}
-.lf{background:linear-gradient(90deg,var(--orange),rgba(255,106,47,0.5));}
-.hf{background:linear-gradient(90deg,var(--teal),rgba(0,212,200,0.5));}
+/* ============ 3D CARDS ============ */
+.three-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+@media(max-width:900px){.three-grid{grid-template-columns:minmax(0,1fr)}}
+.card-3d{
+  position:relative;padding:28px 24px;border-radius:20px;overflow:hidden;
+  background:var(--bg-card);border:1px solid var(--border);
+  box-shadow:0 20px 60px rgba(0,0,0,.8);
+  transform-style:preserve-3d;
+  transform:perspective(1000px) rotateX(0) rotateY(0);
+  transition:transform .18s ease-out,box-shadow .18s ease-out,border-color .2s;
+  opacity:0;
+}
+.card-3d.show{opacity:1}
+.card-3d:hover{border-color:var(--border-accent);box-shadow:0 30px 90px rgba(0,229,255,.08)}
+.card-3d::before{
+  content:"";position:absolute;top:0;left:-60%;width:50%;height:2px;
+  background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:0;
+}
+.card-3d:hover::before{opacity:1;animation:sweep .8s cubic-bezier(.33,1,.68,1)}
+.card-accent-line{height:3px;width:40px;background:var(--gradient-brand);border-radius:999px;margin-bottom:14px}
+.card-label{font-family:var(--font-mono);font-size:.72rem;text-transform:uppercase;letter-spacing:.16em;color:var(--accent);margin-bottom:8px}
+.card-heading{font-family:var(--font-display);font-size:1.15rem;font-weight:700;color:var(--text);margin-bottom:10px;line-height:1.3}
+.card-body{font-size:.88rem;color:var(--text-muted);line-height:1.7}
 
-/* === MEASURE SCREEN === */
-.measure-hero{margin:12px 20px;background:linear-gradient(135deg,rgba(0,212,200,0.08),rgba(255,106,47,0.08));border:1px solid rgba(0,212,200,0.15);border-radius:28px;padding:24px;text-align:center;}
-.measure-title{font-size:22px;font-weight:700;margin-bottom:6px;}
-.measure-sub{font-size:13px;color:var(--muted);line-height:1.5;}
-.device-select{display:flex;gap:8px;padding:0 20px;margin-bottom:16px;overflow-x:auto;scrollbar-width:none;}
-.device-select::-webkit-scrollbar{display:none;}
-.dev-btn{flex-shrink:0;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:10px 16px;display:flex;align-items:center;gap:8px;cursor:pointer;transition:all 0.3s;font-family:var(--font);color:var(--muted);font-size:12px;font-weight:500;}
-.dev-btn.active{background:var(--teal-dim);border-color:var(--teal);color:var(--teal);}
-.dev-icon{font-size:16px;}
+/* ============ ACT 2 — SCENARIO SECTION ============ */
+.act2-section{
+  padding:clamp(80px,10vw,140px) 0;
+  background:var(--bg-elevated);
+  position:relative;z-index:1;overflow:hidden;
+}
+.act2-section::before{
+  content:"";position:absolute;inset:0;
+  background:
+    radial-gradient(circle at 0% 50%,rgba(0,229,255,.12) 0,transparent 55%),
+    radial-gradient(circle at 100% 40%,rgba(0,119,255,.1) 0,transparent 55%);
+  pointer-events:none;
+}
+.act2-header{margin-bottom:60px}
+.act2-label{font-family:var(--font-mono);font-size:.78rem;text-transform:uppercase;letter-spacing:.2em;color:var(--accent);display:inline-block;padding:6px 14px;border:1px solid var(--border-accent);border-radius:6px;margin-bottom:16px}
+.act2-title{font-family:var(--font-display);font-size:clamp(2.4rem,5vw,4.5rem);font-weight:900;letter-spacing:-.04em;line-height:1.05;color:var(--text)}
+.act2-sub{font-size:1rem;color:var(--text-muted);max-width:540px;margin-top:12px;line-height:1.7}
 
-.nfc-card{margin:0 20px 16px;background:linear-gradient(135deg,rgba(0,212,200,0.05),rgba(10,15,28,0.95));border:1px solid rgba(0,212,200,0.25);border-radius:24px;overflow:hidden;position:relative;}
-.nfc-badge{position:absolute;top:16px;right:16px;background:rgba(0,212,200,0.15);border:1px solid rgba(0,212,200,0.3);border-radius:20px;padding:4px 10px;font-size:9px;font-weight:700;letter-spacing:1.5px;color:var(--teal);text-transform:uppercase;}
-.nfc-visual{display:flex;align-items:center;justify-content:center;padding:28px 20px 16px;gap:20px;}
-.nfc-garment{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,rgba(0,212,200,0.2),rgba(255,106,47,0.1));border:2px solid rgba(0,212,200,0.3);display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0;}
-.nfc-garment::after{content:'';position:absolute;inset:-8px;border-radius:50%;border:1px solid rgba(0,212,200,0.15);animation:nfc-ring 2s ease-in-out infinite;}
-@keyframes nfc-ring{0%,100%{transform:scale(1);opacity:0.5;}50%{transform:scale(1.08);opacity:0.2;}}
-.nfc-garment svg{width:36px;height:36px;stroke:var(--teal);fill:none;stroke-width:1.5;}
-.nfc-info{flex:1;}
-.nfc-name{font-size:15px;font-weight:700;margin-bottom:4px;}
-.nfc-desc{font-size:12px;color:var(--muted);line-height:1.4;}
-.nfc-sensors{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:0 16px 16px;}
-.nfc-sensor{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:8px 10px;display:flex;align-items:center;gap:6px;}
-.sensor-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
-.sensor-label{font-size:11px;color:var(--muted);}
+/* Persona card */
+.persona-card{
+  padding:28px 24px;border-radius:20px;
+  background:var(--bg-card);border:1px solid var(--border-accent);
+  margin-bottom:40px;
+  display:flex;align-items:flex-start;gap:20px;
+  box-shadow:0 0 40px rgba(0,229,255,.06);
+  opacity:0;transform:translateY(18px);transition:opacity .6s,transform .6s;
+}
+.persona-card.show{opacity:1;transform:translateY(0)}
+.persona-avatar{
+  width:56px;height:56px;border-radius:999px;flex-shrink:0;
+  background:var(--gradient-brand);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-display);font-size:1.4rem;font-weight:900;color:#060a10;
+}
+.persona-name{font-family:var(--font-display);font-size:1.05rem;font-weight:700;margin-bottom:4px}
+.persona-role{font-family:var(--font-mono);font-size:.74rem;color:var(--accent);text-transform:uppercase;letter-spacing:.14em;margin-bottom:8px}
+.persona-desc{font-size:.88rem;color:var(--text-muted);line-height:1.6}
+.persona-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.persona-tag{font-family:var(--font-mono);font-size:.7rem;padding:3px 9px;border-radius:999px;border:1px solid var(--border-accent);background:var(--accent-glow);color:var(--accent);letter-spacing:.08em}
 
-.protocol-card{margin:0 20px 16px;background:var(--surface);border:1px solid var(--border);border-radius:20px;overflow:hidden;}
-.protocol-header{padding:14px 16px;border-bottom:1px solid var(--border);font-size:12px;font-weight:600;letter-spacing:1px;color:var(--muted);text-transform:uppercase;}
-.protocol-phases{padding:12px 16px;}
-.phase-row{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
-.phase-row:last-child{border-bottom:none;}
-.phase-num{width:24px;height:24px;border-radius:50%;background:var(--bg3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;}
-.phase-row.active .phase-num{background:var(--teal-dim);border-color:var(--teal);color:var(--teal);}
-.phase-info{flex:1;}
-.phase-name{font-size:13px;font-weight:500;}
-.phase-duration{font-size:11px;color:var(--muted);}
-.phase-status{font-size:11px;font-weight:600;}
-.phase-status.done{color:#34d399;}
-.phase-status.active{color:var(--teal);}
-.phase-status.pend{color:var(--muted);}
+/* Timeline */
+.timeline{position:relative;padding-left:36px;margin-top:32px}
+.timeline::before{content:"";position:absolute;left:8px;top:8px;bottom:8px;width:2px;background:linear-gradient(to bottom,var(--accent),var(--accent-blue),transparent)}
+.timeline-item{
+  position:relative;margin-bottom:32px;
+  opacity:0;transform:translateX(-16px);transition:opacity .6s,transform .6s;
+}
+.timeline-item.show{opacity:1;transform:translateX(0)}
+.timeline-marker{
+  position:absolute;left:-32px;top:4px;
+  width:16px;height:16px;border-radius:999px;
+  border:2px solid var(--accent);background:var(--bg-elevated);
+  box-shadow:0 0 12px rgba(0,229,255,.6);
+}
+.timeline-marker.active{background:var(--accent);box-shadow:0 0 18px rgba(0,229,255,.9)}
+.timeline-system{font-family:var(--font-mono);font-size:.7rem;text-transform:uppercase;letter-spacing:.16em;margin-bottom:4px;display:inline-block;padding:2px 8px;border-radius:4px}
+.timeline-system.w{background:rgba(16,185,129,.15);color:#10b981;border:1px solid rgba(16,185,129,.3)}
+.timeline-system.p{background:var(--accent-glow);color:var(--accent);border:1px solid var(--border-accent)}
+.timeline-system.j{background:rgba(124,58,237,.15);color:#a78bfa;border:1px solid rgba(124,58,237,.3)}
+.timeline-title{font-family:var(--font-display);font-size:1rem;font-weight:700;margin:6px 0 4px;color:var(--text)}
+.timeline-body{font-size:.88rem;color:var(--text-muted);line-height:1.6}
 
-.start-btn{display:flex;margin:0 20px 16px;background:linear-gradient(135deg,var(--teal),#00b4aa);border:none;border-radius:20px;padding:18px;align-items:center;justify-content:center;gap:10px;font-family:var(--font);font-size:16px;font-weight:700;color:#000;cursor:pointer;transition:all 0.3s;box-shadow:0 8px 32px rgba(0,212,200,0.3);}
-.start-btn:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(0,212,200,0.4);}
-.start-btn svg{width:20px;height:20px;stroke:#000;fill:none;stroke-width:2.5;}
+/* ============ OUTCOMES GRID ============ */
+.outcomes-section{padding:clamp(60px,8vw,100px) 0;position:relative;z-index:1}
+.outcomes-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-bottom:40px}
+@media(max-width:900px){.outcomes-grid{grid-template-columns:repeat(1,minmax(0,1fr))}}
+.outcome-card{
+  padding:24px 20px;border-radius:16px;background:var(--bg-card);border:1px solid var(--border);
+  transition:border-color .2s,background .2s;
+  opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease,border-color .2s;
+}
+.outcome-card.show{opacity:1;transform:translateY(0)}
+.outcome-card:hover{border-color:var(--border-accent);background:var(--bg-card-hover)}
+.outcome-icon{width:40px;height:40px;border-radius:10px;background:var(--accent-glow);display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+.outcome-label{font-family:var(--font-mono);font-size:.7rem;text-transform:uppercase;letter-spacing:.14em;color:var(--text-muted);margin-bottom:6px}
+.outcome-before{font-size:.84rem;color:var(--color-warning);margin-bottom:4px}
+.outcome-after{font-size:.84rem;color:var(--color-success);margin-bottom:8px}
+.outcome-delta{
+  display:inline-flex;align-items:center;gap:6px;
+  font-family:var(--font-display);font-size:1.4rem;font-weight:900;
+  background:var(--gradient-brand);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.outcome-caption{font-size:.82rem;color:var(--text-faint);margin-top:4px}
 
-/* === DEVICES SCREEN === */
-.devices-hero{margin:12px 20px 16px;position:relative;}
-.devices-hero-img{width:100%;height:160px;object-fit:cover;border-radius:24px;display:block;}
-.devices-hero-overlay{position:absolute;inset:0;border-radius:24px;background:linear-gradient(to top,rgba(4,6,14,0.9),transparent 60%);display:flex;align-items:flex-end;padding:16px;}
-.devices-hero-text .h1{font-size:20px;font-weight:700;}
-.devices-hero-text .h2{font-size:12px;color:var(--teal);}
+/* ============ REVENUE P&L ============ */
+.pl-section{padding:clamp(60px,8vw,100px) 0;background:var(--bg-elevated);position:relative;z-index:1}
+.pl-table-wrapper{border-radius:20px;overflow:hidden;border:1px solid var(--border)}
+.pl-table{width:100%;border-collapse:collapse;font-size:.88rem}
+.pl-table thead tr{background:linear-gradient(90deg,rgba(0,229,255,.12),rgba(0,119,255,.1));border-bottom:1px solid var(--border-accent)}
+.pl-table th{font-family:var(--font-mono);font-size:.74rem;text-transform:uppercase;letter-spacing:.14em;color:var(--accent);padding:14px 20px;text-align:left;font-weight:600}
+.pl-table td{padding:14px 20px;border-bottom:1px solid var(--border);color:var(--text-muted);vertical-align:top}
+.pl-table tr:last-child td{border-bottom:none}
+.pl-table tr:hover td{background:rgba(0,229,255,.03)}
+.pl-label{font-weight:600;color:var(--text);font-family:var(--font-body)}
+.pl-pos{color:var(--color-success);font-weight:600;font-family:var(--font-display)}
+.pl-row-total{background:rgba(0,229,255,.04)!important}
+.pl-row-total td{border-top:1px solid var(--border-accent)!important;color:var(--text)!important;font-weight:700!important}
 
-.device-card{margin:0 20px 12px;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:16px;display:flex;align-items:center;gap:14px;}
-.device-icon{width:50px;height:50px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
-.device-icon.watch{background:rgba(0,212,200,0.1);}
-.device-icon.chest{background:rgba(255,106,47,0.1);}
-.device-icon.nfc{background:rgba(167,139,250,0.1);}
-.device-info{flex:1;}
-.device-name{font-size:14px;font-weight:600;}
-.device-sub{font-size:11px;color:var(--muted);margin-top:2px;}
-.device-status{display:flex;align-items:center;gap:5px;margin-top:6px;}
-.status-dot{width:7px;height:7px;border-radius:50%;}
-.status-dot.connected{background:#34d399;box-shadow:0 0 6px rgba(52,211,153,0.6);}
-.status-dot.searching{background:var(--orange);animation:pulse-dot 1.4s ease-in-out infinite;}
-.status-dot.offline{background:var(--muted);}
-.status-label{font-size:11px;font-weight:500;}
-.status-label.connected{color:#34d399;}
-.status-label.searching{color:var(--orange);}
-.device-signal{display:flex;align-items:flex-end;gap:2px;height:16px;}
-.signal-bar{width:3px;border-radius:2px;background:var(--border);}
-.signal-bar.active{background:var(--teal);}
+/* ============ HUMANOS SECTION ============ */
+.humanos-demo{border-radius:16px;overflow:hidden;background:var(--bg-elevated);border:1px solid var(--border);box-shadow:0 30px 90px rgba(0,0,0,.9)}
+.demo-header{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--surface);border-bottom:1px solid var(--border)}
+.demo-dots{display:flex;gap:5px}.demo-dots span{width:11px;height:11px;border-radius:999px}
+.demo-dots span:nth-child(1){background:#ef4444}.demo-dots span:nth-child(2){background:#f59e0b}.demo-dots span:nth-child(3){background:#22c55e}
+.demo-title{font-family:var(--font-mono);font-size:.76rem;color:var(--text-muted);letter-spacing:.08em}
+.demo-body{padding:20px}
+.demo-upload{border:2px dashed var(--border-accent);border-radius:12px;padding:28px;text-align:center;background:var(--accent-glow);margin-bottom:16px}
+.demo-upload p{font-size:.86rem;color:var(--text-muted);margin-top:8px}
+.demo-features{display:flex;gap:10px;flex-wrap:wrap}
+.demo-feat{display:flex;align-items:center;gap:6px;font-size:.8rem;color:var(--text-muted);padding:6px 12px;border:1px solid var(--border);border-radius:8px;background:rgba(0,0,0,.2)}
+.humanos-features{display:flex;flex-direction:column;gap:16px;margin:20px 0}
+.humanos-feature{display:flex;gap:14px;align-items:flex-start}
+.humanos-feature-icon{width:36px;height:36px;border-radius:10px;background:var(--accent-glow);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.humanos-feature h4{font-family:var(--font-display);font-size:.95rem;font-weight:700;margin-bottom:4px}
+.humanos-feature p{font-size:.84rem;color:var(--text-muted);line-height:1.6}
 
-.edge-card{margin:0 20px 16px;background:linear-gradient(135deg,rgba(167,139,250,0.06),rgba(0,212,200,0.04));border:1px solid rgba(167,139,250,0.2);border-radius:20px;padding:16px;}
-.edge-title{font-size:12px;color:#a78bfa;letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;font-weight:600;}
-.edge-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
-.edge-stat{text-align:center;}
-.edge-val{font-size:16px;font-weight:700;color:#a78bfa;}
-.edge-lab{font-size:10px;color:var(--muted);}
+/* ============ RESEARCH / PUBLICATION ============ */
+.pub-card{padding:28px 24px;border-radius:20px;background:var(--bg-card);border:1px solid var(--border);box-shadow:0 20px 60px rgba(0,0,0,.7)}
+.pub-badge{display:inline-block;padding:4px 10px;border-radius:999px;font-family:var(--font-mono);font-size:.7rem;text-transform:uppercase;letter-spacing:.14em;background:var(--accent-glow);border:1px solid var(--border-accent);color:var(--accent);margin-bottom:14px}
+.pub-card h4{font-family:var(--font-display);font-size:1.1rem;font-weight:700;margin-bottom:6px}
+.pub-title{font-size:.9rem;color:var(--text-muted);margin-bottom:4px;font-style:italic}
+.pub-authors{font-family:var(--font-mono);font-size:.76rem;color:var(--text-faint);margin-bottom:14px}
+.pub-link{display:inline-flex;align-items:center;gap:6px;color:var(--accent);text-decoration:none;font-size:.84rem;font-weight:600;border-bottom:1px solid var(--border-accent);padding-bottom:2px}
+.pub-findings{margin-top:16px}
+.pub-findings h5{font-family:var(--font-mono);font-size:.72rem;text-transform:uppercase;letter-spacing:.14em;color:var(--text-muted);margin-bottom:8px}
+.pub-findings li{font-size:.84rem;color:var(--text-muted);padding:4px 0;padding-left:14px;position:relative;line-height:1.6}
+.pub-findings li::before{content:"→";position:absolute;left:0;color:var(--accent)}
+.research-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:20px}
+.rs-stat{text-align:center}
+.rs-number{font-family:var(--font-display);font-size:1.6rem;font-weight:900;background:var(--gradient-brand);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.rs-label{font-family:var(--font-mono);font-size:.7rem;text-transform:uppercase;letter-spacing:.12em;color:var(--text-muted)}
 
-/* === INSIGHTS SCREEN === */
-.insight-card{margin:0 20px 12px;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:16px;position:relative;overflow:hidden;}
-.insight-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:3px;}
-.insight-card.warn::before{background:var(--orange);}
-.insight-card.good::before{background:#34d399;}
-.insight-card.info::before{background:#a78bfa;}
-.insight-icon{width:36px;height:36px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:10px;}
-.insight-icon.warn{background:rgba(255,106,47,0.1);}
-.insight-icon.good{background:rgba(52,211,153,0.1);}
-.insight-icon.info{background:rgba(167,139,250,0.1);}
-.insight-title{font-size:14px;font-weight:600;margin-bottom:4px;}
-.insight-body{font-size:12px;color:var(--muted);line-height:1.6;}
-.insight-tag{display:inline-flex;align-items:center;gap:4px;margin-top:8px;background:rgba(0,212,200,0.1);border-radius:20px;padding:3px 10px;font-size:10px;color:var(--teal);letter-spacing:0.5px;}
+/* ============ CTA ============ */
+.cta-section{
+  padding:clamp(80px,10vw,140px) 0;
+  background:radial-gradient(circle at 50% 0%,rgba(0,229,255,.18) 0,transparent 60%),var(--bg);
+  position:relative;z-index:1;text-align:center;
+}
+.cta-title{font-family:var(--font-display);font-size:clamp(2.4rem,5vw,4rem);font-weight:900;letter-spacing:-.04em;margin-bottom:16px}
+.cta-desc{font-size:1.05rem;color:var(--text-muted);max-width:520px;margin:0 auto 32px;line-height:1.7}
+.cta-actions{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;margin-bottom:24px}
+.cta-contact{font-family:var(--font-mono);font-size:.8rem;color:var(--text-faint);letter-spacing:.08em}
+.cta-contact a{color:var(--accent);text-decoration:none}
 
-.heatmap-card{margin:0 20px 12px;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:16px;}
-.heatmap-title{font-size:12px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;}
-.heatmap-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;}
-.heatmap-day{border-radius:8px;aspect-ratio:1;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:2px;}
-.heatmap-day-name{font-size:8px;color:var(--muted);letter-spacing:0.5px;}
-.heatmap-day-score{font-size:13px;font-weight:700;}
+/* ============ FOOTER ============ */
+footer{background:var(--bg-elevated);border-top:1px solid var(--border);padding:48px 0 24px;position:relative;overflow:hidden;z-index:1}
+footer::before{
+  content:"";position:absolute;bottom:-80px;left:50%;transform:translateX(-50%);
+  width:1200px;height:280px;
+  background:
+    radial-gradient(ellipse at center,rgba(0,229,255,.6) 0,transparent 55%),
+    radial-gradient(ellipse at 30% 50%,rgba(0,119,255,.45) 0,transparent 60%),
+    radial-gradient(ellipse at 70% 40%,rgba(124,58,237,.4) 0,transparent 60%);
+  filter:blur(46px);opacity:.85;pointer-events:none;
+}
+.footer-grid{display:grid;grid-template-columns:minmax(0,1.8fr) repeat(3,minmax(0,1fr));gap:40px;margin-bottom:32px}
+@media(max-width:900px){.footer-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
+@media(max-width:500px){.footer-grid{grid-template-columns:minmax(0,1fr)}}
+.footer-brand .logo{margin-bottom:12px}
+.footer-desc{font-size:.86rem;color:var(--text-muted);line-height:1.6;max-width:240px}
+.footer-col h4{font-family:var(--font-mono);font-size:.74rem;text-transform:uppercase;letter-spacing:.16em;color:var(--text);margin-bottom:12px}
+.footer-col a{display:block;font-size:.84rem;color:var(--text-muted);text-decoration:none;padding:3px 0;transition:color .2s}
+.footer-col a:hover{color:var(--accent)}
+.footer-bottom{border-top:1px solid var(--border);padding-top:20px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;position:relative;z-index:1}
+.footer-bottom p{font-size:.78rem;color:var(--text-faint)}
 
-.compare-table{margin:0 20px 16px;background:var(--surface);border:1px solid var(--border);border-radius:20px;overflow:hidden;}
-.compare-header{display:grid;grid-template-columns:1fr 80px 80px;background:rgba(255,255,255,0.04);padding:12px 16px;font-size:11px;font-weight:600;color:var(--muted);letter-spacing:0.5px;}
-.compare-header .physio{color:var(--teal);}
-.compare-row{display:grid;grid-template-columns:1fr 80px 80px;padding:10px 16px;border-top:1px solid var(--border);align-items:center;}
-.compare-feature{font-size:12px;color:var(--text);}
-.compare-cell{text-align:center;font-size:16px;}
-.compare-cell.has{color:var(--teal);}
-.compare-cell.no{color:var(--faint);}
+/* ============ UTILITY ANIMATIONS ============ */
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .7s ease,transform .7s ease}
+.reveal.show{opacity:1;transform:translateY(0)}
+.reveal-left{opacity:0;transform:translateX(-24px);transition:opacity .7s ease,transform .7s ease}
+.reveal-left.show{opacity:1;transform:translateX(0)}
+.reveal-right{opacity:0;transform:translateX(24px);transition:opacity .7s ease,transform .7s ease}
+.reveal-right.show{opacity:1;transform:translateX(0)}
 
-/* ANIMATIONS */
-@keyframes fade-in{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
-.screen.active > *{animation:fade-in 0.5s cubic-bezier(0.16,1,0.3,1) both;}
-.screen.active > *:nth-child(1){animation-delay:0.05s;}
-.screen.active > *:nth-child(2){animation-delay:0.1s;}
-.screen.active > *:nth-child(3){animation-delay:0.15s;}
-.screen.active > *:nth-child(4){animation-delay:0.2s;}
-.screen.active > *:nth-child(5){animation-delay:0.25s;}
-.screen.active > *:nth-child(6){animation-delay:0.3s;}
+/* Neural waveform */
+.neural-wave{width:100%;height:3px;background:var(--gradient-neural);border-radius:999px;animation:waveFlow 3s linear infinite;margin:24px 0;background-size:200% 100%}
+@keyframes waveFlow{0%{background-position:0% 0}100%{background-position:200% 0}}
 
-.scroll-hint{text-align:center;font-size:10px;color:var(--faint);padding:8px 0;}
+@media(max-width:600px){
+  .hero-stats{flex-direction:column;gap:20px}
+  .three-grid,.feature-grid,.edge-grid,.outcomes-grid{grid-template-columns:minmax(0,1fr)!important}
+  .split-layout,.split-reverse{grid-template-columns:minmax(0,1fr)!important;direction:ltr!important}
+  .footer-grid{grid-template-columns:minmax(0,1fr)!important}
+  .research-stats{grid-template-columns:minmax(0,1fr)!important}
+}
 </style>
 </head>
 <body>
+
 <canvas id="particleCanvas"></canvas>
 
-<div class="phone-wrapper">
-  <div class="app-content">
-    <header class="app-header">
-      <div class="logo-mark">
-        <svg class="logo-icon" viewBox="0 0 36 36" fill="none">
-          <circle cx="18" cy="18" r="17" stroke="rgba(0,212,200,0.3)" stroke-width="1"/>
-          <path d="M8 18 C8 12 12 8 18 8 C24 8 28 12 28 18" stroke="#00d4c8" stroke-width="2" stroke-linecap="round"/>
-          <path d="M8 18 C8 24 12 28 18 28 C24 28 28 24 28 18" stroke="#ff6a2f" stroke-width="2" stroke-linecap="round"/>
-          <circle cx="18" cy="18" r="4" fill="none" stroke="#fff" stroke-width="1.5"/>
-          <path d="M14 18 L16 16 L18 20 L20 14 L22 18" stroke="#00d4c8" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+<!-- ===================== LOADER ===================== -->
+<div id="loader">
+  <div class="loader-card">
+    <div class="loader-orbit" aria-hidden="true"></div>
+    <div class="loader-inner">
+      <div class="loader-logo">
+        <svg class="loader-logo-svg" width="36" height="36" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+          <circle cx="20" cy="20" r="18" stroke="var(--accent)" stroke-width="2" opacity="0.3"/>
+          <path d="M20 6 Q20 20, 12 28" stroke="var(--accent)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <path d="M20 6 Q20 20, 28 28" stroke="var(--accent-blue)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <circle cx="20" cy="14" r="3" fill="var(--accent)" opacity="0.8"/>
+          <path d="M14 20 L17 20 L19 16 L21 24 L23 20 L26 20" stroke="var(--accent)" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
-        <span class="logo-text">Physio<span>PS</span></span>
+        <div class="loader-wordmark">Physio<span>PS</span> × Welltory</div>
       </div>
-      <div class="header-right">
-        <div class="live-badge"><span class="live-dot"></span>LIVE</div>
-        <div class="avatar">AN</div>
-      </div>
-    </header>
-
-    <div class="screens">
-      <!-- ===== HOME ===== -->
-      <div class="screen active" id="screen-home">
-        <div class="home-pad">
-          <div class="greeting">Good morning, <strong>Alex</strong></div>
-        </div>
-
-        <div class="readiness-hero">
-          <div class="rh-glow"></div>
-          <div class="rh-title">⚡ ANS READINESS — TODAY</div>
-          <div class="rh-main">
-            <div class="rh-gauge-wrap">
-              <svg class="rh-gauge" viewBox="0 0 130 130">
-                <circle class="gauge-bg" cx="65" cy="65" r="52" stroke-dasharray="217 999"/>
-                <circle class="gauge-symp" cx="65" cy="65" r="52" stroke-dasharray="0 217" id="gaugeSymp"/>
-                <circle class="gauge-para" cx="65" cy="65" r="46" stroke-dasharray="0 217" id="gaugePara"/>
-              </svg>
-              <div class="rh-score">
-                <div class="rh-num" id="homeScore">—</div>
-                <div class="rh-unit">SCORE</div>
-              </div>
-            </div>
-            <div class="rh-stats">
-              <div class="rh-stat">
-                <div class="rh-stat-label">Parasympathetic <span id="paraVal">66%</span></div>
-                <div class="stat-bar-bg"><div class="stat-bar-fill t" id="paraBar" style="width:0%"></div></div>
-              </div>
-              <div class="rh-stat">
-                <div class="rh-stat-label">Sympathetic <span id="sympVal">34%</span></div>
-                <div class="stat-bar-bg"><div class="stat-bar-fill o" id="sympBar" style="width:0%"></div></div>
-              </div>
-              <div class="rh-stat">
-                <div class="rh-stat-label">Vagal Tone <span>High</span></div>
-                <div class="stat-bar-bg"><div class="stat-bar-fill t" style="width:0%" id="vagalBar"></div></div>
-              </div>
-              <div class="rh-stat">
-                <div class="rh-stat-label">Coherence <span>92%</span></div>
-                <div class="stat-bar-bg"><div class="stat-bar-fill p" style="width:0%" id="cohBar"></div></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="kpi-grid">
-          <div class="kpi-card t">
-            <div class="kpi-label">HRV RMSSD</div>
-            <div class="kpi-value t" id="kpiHRV">76</div>
-            <div class="kpi-unit">ms</div>
-            <div class="kpi-delta up">↑ +8 vs yesterday</div>
-          </div>
-          <div class="kpi-card o">
-            <div class="kpi-label">Heart Rate</div>
-            <div class="kpi-value o" id="kpiBPM">62</div>
-            <div class="kpi-unit">bpm</div>
-            <div class="kpi-delta up">↓ −4 vs baseline</div>
-          </div>
-          <div class="kpi-card p">
-            <div class="kpi-label">Stress Index</div>
-            <div class="kpi-value p">24</div>
-            <div class="kpi-unit">% low</div>
-            <div class="kpi-delta up">↓ −6 vs yesterday</div>
-          </div>
-          <div class="kpi-card g">
-            <div class="kpi-label">Recovery</div>
-            <div class="kpi-value g">88</div>
-            <div class="kpi-unit">%</div>
-            <div class="kpi-delta up">↑ +12 optimal</div>
-          </div>
-        </div>
-
-        <div class="section-label">LIVE ECG — POLAR H10</div>
-        <div class="ecg-card">
-          <div class="ecg-header">
-            <span class="ecg-title">Lead II Signal · 500Hz</span>
-            <div><span class="ecg-bpm" id="liveBPM">62</span> <span class="ecg-bpm-unit">bpm</span></div>
-          </div>
-          <canvas class="ecg-canvas" id="ecgCanvas" height="60"></canvas>
-        </div>
-
-        <div class="ai-insight">
-          <div class="ai-label"><span class="ai-dot"></span>HUMANOS NEURAL ENGINE</div>
-          <div class="ai-text">Your parasympathetic branch dominance at 66% indicates excellent recovery state. HRV trending +12% above 30-day baseline. Optimal window for high-intensity training or deep cognitive work.</div>
-        </div>
-        <div class="scroll-hint">scroll for more ↓</div>
-      </div>
-
-      <!-- ===== ANS ===== -->
-      <div class="screen" id="screen-ans">
-        <div class="section-label" style="padding-top:8px;">P&S DUAL BRANCH ANALYSIS</div>
-
-        <div class="venn-container">
-          <svg class="venn-svg" viewBox="0 0 380 240">
-            <defs>
-              <radialGradient id="sympGrad" cx="40%" cy="50%">
-                <stop offset="0%" stop-color="#ff6a2f" stop-opacity="0.25"/>
-                <stop offset="100%" stop-color="#ff6a2f" stop-opacity="0"/>
-              </radialGradient>
-              <radialGradient id="paraGrad" cx="60%" cy="50%">
-                <stop offset="0%" stop-color="#00d4c8" stop-opacity="0.25"/>
-                <stop offset="100%" stop-color="#00d4c8" stop-opacity="0"/>
-              </radialGradient>
-              <filter id="glow-orange"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-              <filter id="glow-teal"><feGaussianBlur stdDeviation="4" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-            </defs>
-            <!-- Sympathetic circle -->
-            <circle cx="145" cy="120" r="95" fill="url(#sympGrad)"/>
-            <circle cx="145" cy="120" r="95" fill="none" stroke="#ff6a2f" stroke-width="1.5" stroke-opacity="0.7" filter="url(#glow-orange)"/>
-            <!-- Parasympathetic circle -->
-            <circle cx="235" cy="120" r="95" fill="url(#paraGrad)"/>
-            <circle cx="235" cy="120" r="95" fill="none" stroke="#00d4c8" stroke-width="1.5" stroke-opacity="0.7" filter="url(#glow-teal)"/>
-            <!-- Center overlap label -->
-            <text x="190" y="110" text-anchor="middle" class="venn-center-label">Balance</text>
-            <text x="190" y="126" text-anchor="middle" class="venn-center-label">Zone</text>
-            <!-- Symp label -->
-            <text x="108" y="108" text-anchor="middle" class="venn-label" fill="#ff6a2f">Sympathetic</text>
-            <text x="108" y="136" text-anchor="middle" class="venn-pct" fill="#ff6a2f">34%</text>
-            <!-- Para label -->
-            <text x="272" y="108" text-anchor="middle" class="venn-label" fill="#00d4c8">Parasympath.</text>
-            <text x="272" y="136" text-anchor="middle" class="venn-pct" fill="#00d4c8">66%</text>
-            <!-- HRV top -->
-            <text x="190" y="22" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="11" font-family="Space Grotesk">HRV RMSSD</text>
-            <text x="190" y="46" text-anchor="middle" fill="#00d4c8" font-size="22" font-weight="700" font-family="Space Grotesk">58 ms</text>
-            <!-- Bottom metrics -->
-            <text x="70" y="220" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-size="10" font-family="Space Grotesk">SDNN</text>
-            <text x="70" y="234" text-anchor="middle" fill="#ff6a2f" font-size="13" font-weight="700" font-family="Space Grotesk">72 ms</text>
-            <text x="310" y="220" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-size="10" font-family="Space Grotesk">LF/HF</text>
-            <text x="310" y="234" text-anchor="middle" fill="#00d4c8" font-size="13" font-weight="700" font-family="Space Grotesk">0.8</text>
-          </svg>
-        </div>
-
-        <div class="hrv-ring-card">
-          <div class="hrv-ring-title">HRV SPECTRAL ANALYSIS</div>
-          <div class="hrv-ring-wrap">
-            <svg class="hrv-ring-svg" viewBox="0 0 160 160">
-              <circle cx="80" cy="80" r="68" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="10"/>
-              <circle cx="80" cy="80" r="68" fill="none" stroke="#a78bfa" stroke-width="10" stroke-linecap="round" stroke-dasharray="56 371" transform="rotate(-90 80 80)" style="filter:drop-shadow(0 0 6px rgba(167,139,250,0.5))"/>
-              <circle cx="80" cy="80" r="55" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="9"/>
-              <circle cx="80" cy="80" r="55" fill="none" stroke="#ff6a2f" stroke-width="9" stroke-linecap="round" stroke-dasharray="110 345" transform="rotate(-90 80 80)" style="filter:drop-shadow(0 0 6px rgba(255,106,47,0.5))"/>
-              <circle cx="80" cy="80" r="43" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="9"/>
-              <circle cx="80" cy="80" r="43" fill="none" stroke="#00d4c8" stroke-width="9" stroke-linecap="round" stroke-dasharray="175 270" transform="rotate(-90 80 80)" style="filter:drop-shadow(0 0 8px rgba(0,212,200,0.6))"/>
-            </svg>
-            <div class="hrv-center">
-              <div class="hrv-big">76</div>
-              <div class="hrv-ms">RMSSD</div>
-              <div class="hrv-label">ms</div>
-            </div>
-          </div>
-          <div class="hrv-metrics-grid">
-            <div class="hrv-metric"><div class="hrv-metric-label">SDNN</div><div class="hrv-metric-val t">72<span class="hrv-metric-unit"> ms</span></div></div>
-            <div class="hrv-metric"><div class="hrv-metric-label">LF Power</div><div class="hrv-metric-val o">412<span class="hrv-metric-unit"> ms²</span></div></div>
-            <div class="hrv-metric"><div class="hrv-metric-label">HF Power</div><div class="hrv-metric-val t">687<span class="hrv-metric-unit"> ms²</span></div></div>
-            <div class="hrv-metric"><div class="hrv-metric-label">LF/HF</div><div class="hrv-metric-val p">0.8</div></div>
-            <div class="hrv-metric"><div class="hrv-metric-label">pNN50</div><div class="hrv-metric-val g">38<span class="hrv-metric-unit">%</span></div></div>
-            <div class="hrv-metric"><div class="hrv-metric-label">VLF Power</div><div class="hrv-metric-val p">156<span class="hrv-metric-unit"> ms²</span></div></div>
-          </div>
-        </div>
-
-        <div class="freq-domain">
-          <div class="freq-title">Frequency Domain Power</div>
-          <div class="freq-bar-row">
-            <div class="freq-bar-label"><span style="color:#a78bfa">VLF (0–0.04 Hz)</span><span>156 ms²</span></div>
-            <div class="freq-bar-bg"><div class="freq-bar-fill vlf" style="width:22%"></div></div>
-          </div>
-          <div class="freq-bar-row">
-            <div class="freq-bar-label"><span style="color:var(--orange)">LF (0.04–0.15 Hz)</span><span>412 ms²</span></div>
-            <div class="freq-bar-bg"><div class="freq-bar-fill lf" style="width:50%"></div></div>
-          </div>
-          <div class="freq-bar-row">
-            <div class="freq-bar-label"><span style="color:var(--teal)">HF (0.15–0.4 Hz)</span><span>687 ms²</span></div>
-            <div class="freq-bar-bg"><div class="freq-bar-fill hf" style="width:78%"></div></div>
-          </div>
-        </div>
-        <div class="scroll-hint">scroll for more ↓</div>
-      </div>
-
-      <!-- ===== MEASURE ===== -->
-      <div class="screen" id="screen-measure">
-        <div class="measure-hero">
-          <div class="measure-title">Start ANS Session</div>
-          <div class="measure-sub">Dual P&S analysis using your connected wearables. 5–15 min protocol.</div>
-        </div>
-
-        <div class="section-label">SELECT DEVICE SOURCE</div>
-        <div class="device-select">
-          <button class="dev-btn active" onclick="selectDev(this)"><span class="dev-icon">⌚</span>Apple Watch</button>
-          <button class="dev-btn" onclick="selectDev(this)"><span class="dev-icon">💓</span>Polar H10</button>
-          <button class="dev-btn" onclick="selectDev(this)"><span class="dev-icon">🧬</span>NFC Fabric</button>
-          <button class="dev-btn" onclick="selectDev(this)"><span class="dev-icon">📡</span>All Sources</button>
-        </div>
-
-        <div class="section-label">PATENT-PENDING WEARABLE</div>
-        <div class="nfc-card">
-          <div class="nfc-badge">⚡ NFC POWERED</div>
-          <div class="nfc-visual">
-            <div class="nfc-garment">
-              <svg viewBox="0 0 36 36"><path d="M18 6 C10 6 6 11 6 18 C6 25 10 30 18 30 C26 30 30 25 30 18 C30 11 26 6 18 6Z" stroke-width="1.5"/><path d="M13 18 L15 16 L18 22 L21 12 L23 18" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </div>
-            <div class="nfc-info">
-              <div class="nfc-name">PhysioPS NFC BioFabric™</div>
-              <div class="nfc-desc">Patent-pending compression wearable. 6 biosensors woven into conductive fabric. Zero battery — harvests energy via NFC field.</div>
-            </div>
-          </div>
-          <div class="nfc-sensors">
-            <div class="nfc-sensor"><div class="sensor-dot" style="background:#00d4c8"></div><span class="sensor-label">ECG (3-lead)</span></div>
-            <div class="nfc-sensor"><div class="sensor-dot" style="background:#ff6a2f"></div><span class="sensor-label">PPG Optical</span></div>
-            <div class="nfc-sensor"><div class="sensor-dot" style="background:#a78bfa"></div><span class="sensor-label">Galvanic Skin</span></div>
-            <div class="nfc-sensor"><div class="sensor-dot" style="background:#34d399"></div><span class="sensor-label">Respiration</span></div>
-            <div class="nfc-sensor"><div class="sensor-dot" style="background:#fbbf24"></div><span class="sensor-label">Skin Temp</span></div>
-            <div class="nfc-sensor"><div class="sensor-dot" style="background:#60a5fa"></div><span class="sensor-label">Barometric</span></div>
-          </div>
-        </div>
-
-        <div class="section-label">MEASUREMENT PROTOCOL</div>
-        <div class="protocol-card">
-          <div class="protocol-header">15-MIN STANDARD SESSION</div>
-          <div class="protocol-phases">
-            <div class="phase-row active">
-              <div class="phase-num">1</div>
-              <div class="phase-info"><div class="phase-name">Baseline Calibration</div><div class="phase-duration">3 min · Still + breathing</div></div>
-              <div class="phase-status active">Active</div>
-            </div>
-            <div class="phase-row">
-              <div class="phase-num">2</div>
-              <div class="phase-info"><div class="phase-name">Sympathetic Load</div><div class="phase-duration">5 min · Cognitive task</div></div>
-              <div class="phase-status pend">Pending</div>
-            </div>
-            <div class="phase-row">
-              <div class="phase-num">3</div>
-              <div class="phase-info"><div class="phase-name">Recovery Window</div><div class="phase-duration">5 min · Deep breathing</div></div>
-              <div class="phase-status pend">Pending</div>
-            </div>
-            <div class="phase-row">
-              <div class="phase-num">4</div>
-              <div class="phase-info"><div class="phase-name">AI P&S Analysis</div><div class="phase-duration">2 min · HumanOS processing</div></div>
-              <div class="phase-status pend">Pending</div>
-            </div>
-          </div>
-        </div>
-
-        <button class="start-btn" onclick="startMeasure()">
-          <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-          Begin ANS Measurement
-        </button>
-        <div class="scroll-hint">scroll for more ↓</div>
-      </div>
-
-      <!-- ===== DEVICES ===== -->
-      <div class="screen" id="screen-devices">
-        <div class="section-label" style="padding-top:8px;">CONNECTED HARDWARE</div>
-
-        <div class="device-card">
-          <div class="device-icon watch">⌚</div>
-          <div class="device-info">
-            <div class="device-name">Apple Watch Series 10</div>
-            <div class="device-sub">PPG · ECG · Accel · SpO2</div>
-            <div class="device-status">
-              <div class="status-dot connected"></div>
-              <span class="status-label connected">Connected · BT 5.3</span>
-            </div>
-          </div>
-          <div class="device-signal">
-            <div class="signal-bar active" style="height:5px"></div>
-            <div class="signal-bar active" style="height:8px"></div>
-            <div class="signal-bar active" style="height:12px"></div>
-            <div class="signal-bar active" style="height:16px"></div>
-          </div>
-        </div>
-
-        <div class="device-card">
-          <div class="device-icon chest">💓</div>
-          <div class="device-info">
-            <div class="device-name">Polar H10 Chest Strap</div>
-            <div class="device-sub">Clinical ECG · 500Hz · RR Interval</div>
-            <div class="device-status">
-              <div class="status-dot connected"></div>
-              <span class="status-label connected">Connected · BLE + ANT+</span>
-            </div>
-          </div>
-          <div class="device-signal">
-            <div class="signal-bar active" style="height:5px"></div>
-            <div class="signal-bar active" style="height:8px"></div>
-            <div class="signal-bar active" style="height:12px"></div>
-            <div class="signal-bar active" style="height:16px"></div>
-          </div>
-        </div>
-
-        <div class="device-card">
-          <div class="device-icon nfc">🧬</div>
-          <div class="device-info">
-            <div class="device-name">PhysioPS NFC BioFabric™</div>
-            <div class="device-sub">6-sensor compression · NFC powered</div>
-            <div class="device-status">
-              <div class="status-dot searching"></div>
-              <span class="status-label searching">Searching via NFC…</span>
-            </div>
-          </div>
-          <div class="device-signal">
-            <div class="signal-bar" style="height:5px"></div>
-            <div class="signal-bar" style="height:8px"></div>
-            <div class="signal-bar" style="height:12px"></div>
-            <div class="signal-bar" style="height:16px"></div>
-          </div>
-        </div>
-
-        <div class="device-card">
-          <div class="device-icon watch">🏃</div>
-          <div class="device-info">
-            <div class="device-name">Garmin HRM-Pro+</div>
-            <div class="device-sub">Running dynamics · Lactate</div>
-            <div class="device-status">
-              <div class="status-dot offline"></div>
-              <span class="status-label" style="color:var(--muted)">Not paired</span>
-            </div>
-          </div>
-          <div class="device-signal">
-            <div class="signal-bar" style="height:5px"></div>
-            <div class="signal-bar" style="height:8px"></div>
-            <div class="signal-bar" style="height:12px"></div>
-            <div class="signal-bar" style="height:16px"></div>
-          </div>
-        </div>
-
-        <div class="edge-card">
-          <div class="edge-title">🔮 HumanOS Edge Compute</div>
-          <div class="edge-stats">
-            <div class="edge-stat"><div class="edge-val">2.1ms</div><div class="edge-lab">Inference</div></div>
-            <div class="edge-stat"><div class="edge-val">97.4%</div><div class="edge-lab">Accuracy</div></div>
-            <div class="edge-stat"><div class="edge-val">PQC</div><div class="edge-lab">Encryption</div></div>
-          </div>
-        </div>
-
-        <div style="margin:0 20px 16px;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:16px;">
-          <div style="font-size:12px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">SENSOR FUSION ENGINE</div>
-          <div style="font-size:12px;color:var(--muted);line-height:1.6;">HumanOS fuses multi-source signals using adaptive Kalman filtering + ANS-specific neural models trained on 8,000+ clinical patients. 50+ autonomic conditions detected in real-time.</div>
-          <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;">
-            <span style="background:rgba(0,212,200,0.1);border:1px solid rgba(0,212,200,0.2);border-radius:20px;padding:3px 8px;font-size:10px;color:var(--teal);">FDA 510(k) Cleared</span>
-            <span style="background:rgba(255,106,47,0.1);border:1px solid rgba(255,106,47,0.2);border-radius:20px;padding:3px 8px;font-size:10px;color:var(--orange);">CE Mark</span>
-            <span style="background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.2);border-radius:20px;padding:3px 8px;font-size:10px;color:#a78bfa;">HIPAA Secure</span>
-            <span style="background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.2);border-radius:20px;padding:3px 8px;font-size:10px;color:#34d399;">ISO 13485</span>
-          </div>
-        </div>
-        <div class="scroll-hint">scroll for more ↓</div>
-      </div>
-
-      <!-- ===== INSIGHTS ===== -->
-      <div class="screen" id="screen-insights">
-        <div class="section-label" style="padding-top:8px;">AI DIAGNOSTIC INSIGHTS</div>
-
-        <div class="insight-card good">
-          <div class="insight-icon good">🟢</div>
-          <div class="insight-title">Parasympathetic Dominance Confirmed</div>
-          <div class="insight-body">Your RFa (respiratory frequency activity) reading of 687 ms² indicates strong vagal tone. This represents optimal recovery state — parasympathetic nervous system is actively down-regulating sympathetic activation from yesterday's training load.</div>
-          <div class="insight-tag">✦ P-Branch Active · RMSSD 76ms</div>
-        </div>
-
-        <div class="insight-card warn">
-          <div class="insight-icon warn">⚠️</div>
-          <div class="insight-title">Mild Orthostatic Sympathetic Response</div>
-          <div class="insight-body">LFa (low frequency activity) shows mild elevation at 412 ms² vs. your 30-day mean of 380 ms². This is consistent with post-exercise sympathetic rebound. Monitor for 24h — if LFa exceeds 480 ms², consider scheduling a recovery day.</div>
-          <div class="insight-tag">⚡ S-Branch Monitor · LF 412ms²</div>
-        </div>
-
-        <div class="insight-card info">
-          <div class="insight-icon info">🔮</div>
-          <div class="insight-title">HumanOS Neural Engine Prediction</div>
-          <div class="insight-body">Based on current P&S dual-branch analysis, your ANS age is estimated 8 years younger than chronological. 94% probability of high performance output in next 6-hour window. Cognitive optimization window: now → 3pm.</div>
-          <div class="insight-tag">⬡ AntimatterAI · 97.4% confidence</div>
-        </div>
-
-        <div class="heatmap-card">
-          <div class="heatmap-title">7-DAY READINESS HEATMAP</div>
-          <div class="heatmap-grid">
-            <div class="heatmap-day" style="background:rgba(255,106,47,0.15)"><div class="heatmap-day-name">MON</div><div class="heatmap-day-score" style="color:var(--orange)">61</div></div>
-            <div class="heatmap-day" style="background:rgba(255,106,47,0.12)"><div class="heatmap-day-name">TUE</div><div class="heatmap-day-score" style="color:var(--orange)">58</div></div>
-            <div class="heatmap-day" style="background:rgba(251,191,36,0.15)"><div class="heatmap-day-name">WED</div><div class="heatmap-day-score" style="color:#fbbf24">74</div></div>
-            <div class="heatmap-day" style="background:rgba(0,212,200,0.15)"><div class="heatmap-day-name">THU</div><div class="heatmap-day-score" style="color:var(--teal)">82</div></div>
-            <div class="heatmap-day" style="background:rgba(52,211,153,0.15)"><div class="heatmap-day-name">FRI</div><div class="heatmap-day-score" style="color:#34d399">89</div></div>
-            <div class="heatmap-day" style="background:rgba(0,212,200,0.12)"><div class="heatmap-day-name">SAT</div><div class="heatmap-day-score" style="color:var(--teal)">85</div></div>
-            <div class="heatmap-day" style="background:rgba(0,212,200,0.2)"><div class="heatmap-day-name">SUN</div><div class="heatmap-day-score" style="color:var(--teal)">88</div></div>
-          </div>
-        </div>
-
-        <div class="section-label">VS. WELLTORY CAPABILITIES</div>
-        <div class="compare-table">
-          <div class="compare-header">
-            <span>Feature</span>
-            <span class="physio">PhysioPS</span>
-            <span>Welltory</span>
-          </div>
-          <div class="compare-row"><span class="compare-feature">Dual P&S Branch Isolation</span><span class="compare-cell has">✓</span><span class="compare-cell no">✗</span></div>
-          <div class="compare-row"><span class="compare-feature">FDA 510(k) Cleared</span><span class="compare-cell has">✓</span><span class="compare-cell no">✗</span></div>
-          <div class="compare-row"><span class="compare-feature">Clinical-Grade ECG (500Hz)</span><span class="compare-cell has">✓</span><span class="compare-cell no">✗</span></div>
-          <div class="compare-row"><span class="compare-feature">NFC Fabric Wearable</span><span class="compare-cell has">✓</span><span class="compare-cell no">✗</span></div>
-          <div class="compare-row"><span class="compare-feature">50+ ANS Conditions Detected</span><span class="compare-cell has">✓</span><span class="compare-cell no">✗</span></div>
-          <div class="compare-row"><span class="compare-feature">HRV Measurement</span><span class="compare-cell has">✓</span><span class="compare-cell has">✓</span></div>
-          <div class="compare-row"><span class="compare-feature">AI Neural Engine</span><span class="compare-cell has">✓</span><span class="compare-cell no">✗</span></div>
-          <div class="compare-row"><span class="compare-feature">Post-Quantum Encryption</span><span class="compare-cell has">✓</span><span class="compare-cell no">✗</span></div>
-        </div>
-        <div class="scroll-hint">scroll for more ↓</div>
-      </div>
-    </div><!-- /screens -->
-
-    <!-- BOTTOM NAV -->
-    <nav class="bottom-nav">
-      <button class="nav-item active" onclick="switchTab(0,this)" id="nav0">
-        <div class="nav-icon-wrap"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
-        <span class="nav-label">Home</span>
-      </button>
-      <button class="nav-item" onclick="switchTab(1,this)" id="nav1">
-        <div class="nav-icon-wrap"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 12 L10.5 9 L12.5 14 L15 11 L16 12"/></svg></div>
-        <span class="nav-label">ANS</span>
-      </button>
-      <button class="nav-item" onclick="switchTab(2,this)" id="nav2">
-        <div class="nav-icon-wrap"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div>
-        <span class="nav-label">Measure</span>
-      </button>
-      <button class="nav-item" onclick="switchTab(3,this)" id="nav3">
-        <div class="nav-icon-wrap"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></svg></div>
-        <span class="nav-label">Devices</span>
-      </button>
-      <button class="nav-item" onclick="switchTab(4,this)" id="nav4">
-        <div class="nav-icon-wrap"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
-        <span class="nav-label">Insights</span>
-      </button>
-    </nav>
+      <div class="loader-tag">Autonomic alliance brief · 2026</div>
+      <div class="loader-title">Initializing the ANS intelligence layer</div>
+      <div class="loader-sub">Spinning up P&S Monitoring, syncing Welltory HRV telemetry across 16M+ users, and activating Akamai edge compute for sub-millisecond ANS inference.</div>
+      <div class="loader-bar"><div class="loader-fill"></div></div>
+    </div>
   </div>
 </div>
 
+<!-- ===================== NAV ===================== -->
+<header class="header" id="mainHeader">
+  <nav class="nav-container">
+    <a href="#" class="logo" aria-label="PhysioPS × Welltory Home">
+      <svg width="36" height="36" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+        <circle cx="20" cy="20" r="18" stroke="var(--accent)" stroke-width="2" opacity="0.3"/>
+        <path d="M20 6 Q20 20, 12 28" stroke="var(--accent)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <path d="M20 6 Q20 20, 28 28" stroke="var(--accent-blue)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <circle cx="20" cy="14" r="3" fill="var(--accent)" opacity="0.8"/>
+        <path d="M14 20 L17 20 L19 16 L21 24 L23 20 L26 20" stroke="var(--accent)" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span class="logo-text">Physio<span class="logo-accent">PS</span> × Welltory</span>
+    </a>
+    <div class="nav-links">
+      <a href="#act1" class="nav-link">The Partnership</a>
+      <a href="#architecture" class="nav-link">Data Flow</a>
+      <a href="#edge" class="nav-link">Edge Infra</a>
+      <a href="#act2" class="nav-link">Act II — Scenario</a>
+      <a href="#revenue" class="nav-link">Revenue</a>
+      <a href="https://physiops-v2.vercel.app" target="_blank" rel="noopener" class="nav-link nav-cta">PhysioPS Platform ↗</a>
+    </div>
+  </nav>
+</header>
+
+<main>
+
+<!-- ===================== HERO ===================== -->
+<section class="hero" id="hero">
+  <div class="hero-bg">
+    <div class="hero-bg-image" aria-hidden="true"></div>
+    <div class="hero-bg-grid" aria-hidden="true"></div>
+    <div class="hero-overlay" aria-hidden="true"></div>
+  </div>
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-badge" aria-label="Live ANS telemetry">
+        <div class="badge-dot" aria-hidden="true"></div>
+        FDA 510(k) Cleared · AI-Powered · Akamai Edge · &lt;1ms Latency
+      </div>
+      <div class="hero-tag-row">
+        <span class="hero-tag">Partnership Brief</span>
+        <span class="hero-tag">For Welltory Only</span>
+        <span class="hero-tag">Nirmata Holdings · 2026</span>
+      </div>
+      <h1 class="hero-title">
+        The Autonomic<br>
+        <span class="gradient-text">Operating System</span><br>
+        for Human Health.
+      </h1>
+      <p class="hero-subtitle">
+        Welltory sees the signal. PhysioPS reads the branches. Together we give 90M+ undiagnosed Americans the clinical ANS truth that mainstream medicine keeps missing — at sub-millisecond latency, from a wrist or a 15-minute clinic visit.
+      </p>
+      <div class="hero-actions">
+        <a href="#act2" class="btn btn-primary">
+          <span>See Act II: Sarah's Journey</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a href="#architecture" class="btn btn-ghost">Explore the Live Data Flow</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat">
+          <span class="stat-number" data-target="16">0</span><span class="stat-suffix">M+</span>
+          <span class="stat-label">Welltory stress profiles</span>
+        </div>
+        <div class="stat">
+          <span class="stat-number" data-target="90">0</span><span class="stat-suffix">M+</span>
+          <span class="stat-label">Undiagnosed ANS dysfunction</span>
+        </div>
+        <div class="stat">
+          <span class="stat-number" data-target="8128">0</span><span class="stat-suffix"></span>
+          <span class="stat-label">Brain Medicine cohort</span>
+        </div>
+        <div class="stat">
+          <span class="stat-number" data-target="15">0</span><span class="stat-suffix"> min</span>
+          <span class="stat-label">P&S test — non-invasive</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-indicator" aria-hidden="true">
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- ===================== STATS BAND ===================== -->
+<section class="stats-band" aria-label="Alliance metrics">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-block" data-delay="0">
+        <div class="stat-block-label">Welltory Universe</div>
+        <div class="stat-block-number">16M+</div>
+        <div class="stat-block-caption">People globally contributing daily HRV, stress, energy & sleep data</div>
+      </div>
+      <div class="stat-block" data-delay="80">
+        <div class="stat-block-label">ANS Dysfunction Est.</div>
+        <div class="stat-block-number">90M+</div>
+        <div class="stat-block-caption">Americans walking around with undetected P&S imbalance PhysioPS can quantify</div>
+      </div>
+      <div class="stat-block" data-delay="160">
+        <div class="stat-block-label">Conditions Detected</div>
+        <div class="stat-block-number">50+</div>
+        <div class="stat-block-caption">Conditions PhysioPS P&S Monitoring illuminates — one 15-min test</div>
+      </div>
+      <div class="stat-block" data-delay="240">
+        <div class="stat-block-label">Symptom Reduction</div>
+        <div class="stat-block-number">77%</div>
+        <div class="stat-block-caption">Of 8,128 Brain Medicine patients reported improved sleep after P&S-guided care</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== CONDITIONS MARQUEE ===================== -->
+<section class="conditions-section" aria-label="Conditions PhysioPS ANS testing covers">
+  <div class="conditions-track">
+    <div class="condition-pill">Chronic Stress</div><div class="condition-pill">Hypertension</div>
+    <div class="condition-pill">Long-COVID</div><div class="condition-pill">Depression</div>
+    <div class="condition-pill">Anxiety</div><div class="condition-pill">PTSD</div>
+    <div class="condition-pill">Dysautonomia</div><div class="condition-pill">Burnout</div>
+    <div class="condition-pill">Heart Failure</div><div class="condition-pill">POTS</div>
+    <div class="condition-pill">Diabetes</div><div class="condition-pill">Chronic Fatigue</div>
+    <div class="condition-pill">Fibromyalgia</div><div class="condition-pill">Parkinson's</div>
+    <div class="condition-pill">Syncope</div><div class="condition-pill">Orthostatic Intolerance</div>
+    <div class="condition-pill">Cardiomyopathy</div><div class="condition-pill">Sleep Disorders</div>
+    <div class="condition-pill">TBI / Concussion</div><div class="condition-pill">Obesity</div>
+    <!-- duplicate for seamless loop -->
+    <div class="condition-pill">Chronic Stress</div><div class="condition-pill">Hypertension</div>
+    <div class="condition-pill">Long-COVID</div><div class="condition-pill">Depression</div>
+    <div class="condition-pill">Anxiety</div><div class="condition-pill">PTSD</div>
+    <div class="condition-pill">Dysautonomia</div><div class="condition-pill">Burnout</div>
+    <div class="condition-pill">Heart Failure</div><div class="condition-pill">POTS</div>
+    <div class="condition-pill">Diabetes</div><div class="condition-pill">Chronic Fatigue</div>
+    <div class="condition-pill">Fibromyalgia</div><div class="condition-pill">Parkinson's</div>
+    <div class="condition-pill">Syncope</div><div class="condition-pill">Orthostatic Intolerance</div>
+    <div class="condition-pill">Cardiomyopathy</div><div class="condition-pill">Sleep Disorders</div>
+    <div class="condition-pill">TBI / Concussion</div><div class="condition-pill">Obesity</div>
+  </div>
+  <div class="conditions-track conditions-track-reverse">
+    <div class="condition-pill">COPD</div><div class="condition-pill">Migraines</div>
+    <div class="condition-pill">Menopause</div><div class="condition-pill">ADD/ADHD</div>
+    <div class="condition-pill">GERD</div><div class="condition-pill">IBS</div>
+    <div class="condition-pill">Burn Pit Exposure</div><div class="condition-pill">Aerotoxicity</div>
+    <div class="condition-pill">Renal Failure</div><div class="condition-pill">CRPS</div>
+    <div class="condition-pill">Bipolar Disease</div><div class="condition-pill">MSA</div>
+    <div class="condition-pill">Prediabetes</div><div class="condition-pill">Exercise Intolerance</div>
+    <div class="condition-pill">Sepsis Detection</div><div class="condition-pill">Alzheimer's</div>
+    <div class="condition-pill">Atherosclerosis</div><div class="condition-pill">EDS</div>
+    <div class="condition-pill">Asthma</div><div class="condition-pill">Neuropathy</div>
+    <div class="condition-pill">COPD</div><div class="condition-pill">Migraines</div>
+    <div class="condition-pill">Menopause</div><div class="condition-pill">ADD/ADHD</div>
+    <div class="condition-pill">GERD</div><div class="condition-pill">IBS</div>
+    <div class="condition-pill">Burn Pit Exposure</div><div class="condition-pill">Aerotoxicity</div>
+    <div class="condition-pill">Renal Failure</div><div class="condition-pill">CRPS</div>
+    <div class="condition-pill">Bipolar Disease</div><div class="condition-pill">MSA</div>
+    <div class="condition-pill">Prediabetes</div><div class="condition-pill">Exercise Intolerance</div>
+    <div class="condition-pill">Sepsis Detection</div><div class="condition-pill">Alzheimer's</div>
+    <div class="condition-pill">Atherosclerosis</div><div class="condition-pill">EDS</div>
+    <div class="condition-pill">Asthma</div><div class="condition-pill">Neuropathy</div>
+  </div>
+</section>
+
+<!-- ===================== ACT 1: ROLES / GAP / OUTCOMES ===================== -->
+<section class="section section-dark" id="act1">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-tag">Act I — The Strategic Case</span>
+      <h2 class="section-title">Welltory sees HRV.<br><span class="gradient-text">PhysioPS reads the branches.</span></h2>
+      <p class="section-desc">HRV measures the orchestra. P&S Monitoring identifies each instrument. That's the gap Welltory hasn't been able to cross — until now.</p>
+    </div>
+    <div class="three-grid">
+      <article class="card-3d">
+        <div class="card-accent-line"></div>
+        <div class="card-label">Welltory · Role</div>
+        <div class="card-heading">The World's ANS-Aware Wellness UI</div>
+        <p class="card-body">16M+ users get daily HRV-based Stress, Energy, and Health scores. Welltory's AI copilot runs workplace stress analytics, burnout prevention, and lifestyle coaching — without ever touching clinical diagnosis territory.</p>
+      </article>
+      <article class="card-3d">
+        <div class="card-accent-line"></div>
+        <div class="card-label">The Unsolved ANS Gap</div>
+        <div class="card-heading">HRV Hears the Duet, Not the Instruments</div>
+        <p class="card-body">HRV engines cannot separate parasympathetic from sympathetic contribution. Chronic stress, treatment-resistant depression, Long-COVID, hypertension, and burnout all look the same in HRV — but have completely different P&S root causes requiring different interventions.</p>
+      </article>
+      <article class="card-3d">
+        <div class="card-accent-line"></div>
+        <div class="card-label">PhysioPS · Outcome</div>
+        <div class="card-heading">Branch-Specific Truth at Clinical Scale</div>
+        <p class="card-body">P&S Monitoring independently quantifies RFa (parasympathetic) and LFa (sympathetic), exposing alpha-sympathetic withdrawal, PS excess, and beta-sympathetic compensation. These labels feed back into Welltory — turning "high stress" into a treatable ANS diagnosis.</p>
+      </article>
+    </div>
+    <div class="neural-wave" style="margin-top:40px" aria-hidden="true"></div>
+
+    <!-- Partner roles feature grid -->
+    <div class="section-header reveal" style="margin-top:60px;margin-bottom:24px">
+      <span class="section-tag">No Channel Conflict · Pure Amplification</span>
+      <h2 class="section-title">They own <span class="gradient-text">different layers</span> of the same stack.</h2>
+      <p class="section-desc">Welltory keeps the consumer brand, subscriptions, and wellness UX. PhysioPS keeps the FDA-cleared diagnostics, clinical billing, and P&S science. Together they cover both sides of the ANS truth gap.</p>
+    </div>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+        <h3>Welltory Owns</h3>
+        <p>Consumer brand, app UX, AI coaching, HRV scoring, workplace stress analytics, employer contracts, subscriptions (~$120/yr premium), and user acquisition at global scale.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5"><path d="M9 12l2 2 4-4"/><path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
+        <h3>PhysioPS Owns</h3>
+        <p>FDA 510(k) clearance, P&S Monitoring hardware (CMU/RMU), HumanOS AI diagnostic engine, clinical billing codes, clinic network, VA/payer relationships, and Colombo's P&S science IP.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+        <h3>Together They Unlock</h3>
+        <p>The world's first consumer-to-clinical ANS intelligence layer: Welltory detects risk, PhysioPS diagnoses root cause, HumanOS generates the clinical report, and Welltory tracks recovery — all in one frictionless pipeline.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== ARCHITECTURE ===================== -->
+<section class="section" id="architecture">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-tag">Live Data Flow</span>
+      <h2 class="section-title">Who fires — and <span class="gradient-text">when</span>.</h2>
+      <p class="section-desc">A real-time pipeline from a stressed Welltory user at 11pm on a Tuesday to a P&S-guided clinical protocol — and back into a PS/S-calibrated Today screen that finally explains why they feel the way they feel.</p>
+    </div>
+    <div class="arch-wrapper">
+      <div class="arch-header">
+        <div class="arch-dots"><span></span><span></span><span></span></div>
+        <div class="arch-title-text">PhysioPS × Welltory — Live ANS Data Flow · 8 Steps</div>
+      </div>
+      <div class="arch-grid">
+        <div class="arch-block" data-delay="0">
+          <div class="arch-step">Step 01</div>
+          <div class="arch-block-title">Daily Passive Signal</div>
+          <p class="arch-block-body">Welltory ingests HRV, resting HR, sleep, activity, BP (if connected), and self-reported symptoms from wearables and phones, computing daily Stress/Energy/Health scores and burnout risk.</p>
+          <span class="arch-owner welltory">Welltory</span>
+        </div>
+        <div class="arch-block" data-delay="70">
+          <div class="arch-step">Step 02</div>
+          <div class="arch-block-title">ANS Risk Segmentation</div>
+          <p class="arch-block-body">Welltory's AI models detect chronic stress, poor recovery, creeping BP, Long-COVID symptom clusters, and cardiometabolic risk flags — routing users into the "ANS dysfunction risk" cohort.</p>
+          <span class="arch-owner welltory">Welltory</span>
+        </div>
+        <div class="arch-block" data-delay="140">
+          <div class="arch-step">Step 03</div>
+          <div class="arch-block-title">In-App P&S Referral</div>
+          <p class="arch-block-body">High-risk users see an in-app invitation: "Your nervous system pattern may be affecting your BP and energy. Want a 15-min ANS test with our clinical partner?" — with consent, Welltory fires the PhysioPS Referral API.</p>
+          <span class="arch-owner welltory">Welltory</span>
+        </div>
+        <div class="arch-block" data-delay="210">
+          <div class="arch-step">Step 04</div>
+          <div class="arch-block-title">P&S Monitoring Session</div>
+          <p class="arch-block-body">PhysioPS clinic runs the 15-min non-invasive test: ECG, HR, BP across baseline, deep breathing, Valsalva, and standing challenges. Measures RFa (parasympathetic) and LFa (sympathetic) independently and simultaneously.</p>
+          <span class="arch-owner physiops">PhysioPS</span>
+        </div>
+        <div class="arch-block" data-delay="280">
+          <div class="arch-step">Step 05</div>
+          <div class="arch-block-title">HumanOS AI Analysis</div>
+          <p class="arch-block-body">HumanOS ingests the .ans file via Akamai edge, runs spectral HRV decomposition and AI pattern recognition in &lt;30 seconds, generating a 10-slide clinician-ready report with PS/S patterns, risk markers, and therapy recommendations.</p>
+          <span class="arch-owner physiops">PhysioPS</span>
+        </div>
+        <div class="arch-block" data-delay="350">
+          <div class="arch-step">Step 06</div>
+          <div class="arch-block-title">Provider Session & Protocol</div>
+          <p class="arch-block-body">Physician reviews HumanOS report, identifies root cause (e.g., parasympathetic excess + alpha-sympathetic withdrawal), and prescribes a targeted low-and-slow protocol. PhysioPS handles billing (CPT codes, up to 3 tests/year, ~$250/test).</p>
+          <span class="arch-owner physiops">PhysioPS</span>
+        </div>
+        <div class="arch-block" data-delay="420">
+          <div class="arch-step">Step 07</div>
+          <div class="arch-block-title">PS/S Labels → Welltory</div>
+          <p class="arch-block-body">PhysioPS pushes distilled ANS labels (PS excess, LFa compensation, autonomic balance score, Total Power) back to Welltory via secure API. No PHI crosses — just anonymized clinical context. Welltory upgrades the user's coaching experience.</p>
+          <span class="arch-owner joint">Joint</span>
+        </div>
+        <div class="arch-block" data-delay="490">
+          <div class="arch-step">Step 08</div>
+          <div class="arch-block-title">Outcomes Loop</div>
+          <p class="arch-block-body">Welltory tracks daily recovery and symptom trends against P&S-guided protocol. Employer dashboards show ANS risk improvements. PhysioPS schedules follow-up tests. Users churn less. Employers pay more. Everyone wins.</p>
+          <span class="arch-owner joint">Joint</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== AKAMAI EDGE COMPUTE ===================== -->
+<section class="section section-dark" id="edge">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-tag">Infrastructure · Akamai Edge Compute</span>
+      <h2 class="section-title">Sub-Millisecond ANS Intelligence.<br><span class="gradient-text">Everywhere on Earth.</span></h2>
+      <p class="section-desc">PhysioPS runs on Akamai's global edge and cloud infrastructure — giving Welltory an ANS diagnostic engine that's faster, more secure, and more reliable than anything else in healthcare technology. This is what "amplify" actually means.</p>
+    </div>
+    <div class="edge-grid">
+      <div class="edge-card" data-delay="0">
+        <div class="edge-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+        <h3>&lt;1ms Latency</h3>
+        <p>Akamai edge nodes positioned globally ensure real-time ANS data processing. When a Welltory user hits the P&S referral API, PhysioPS responds in under a millisecond — anywhere on Earth.</p>
+        <div class="edge-stat-pill"><span>⚡</span> Sub-1ms roundtrip</div>
+      </div>
+      <div class="edge-card" data-delay="80">
+        <div class="edge-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
+        <h3>NVIDIA Blackwell GPU</h3>
+        <p>Dedicated private NVIDIA Blackwell GPU compute instances for HumanOS AI inferencing — isolated, high-performance, with full data sovereignty. No shared cloud, no latency spikes.</p>
+        <div class="edge-stat-pill"><span>🔲</span> Dedicated GPU · Private</div>
+      </div>
+      <div class="edge-card" data-delay="160">
+        <div class="edge-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <h3>Post-Quantum Security</h3>
+        <p>Akamai post-quantum cryptography protects the most sensitive medical data on Earth — ANS patterns, P&S branch data, and patient identifiers — against both current and future computational threats.</p>
+        <div class="edge-stat-pill"><span>🔐</span> Post-quantum PQ3</div>
+      </div>
+      <div class="edge-card" data-delay="240">
+        <div class="edge-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg></div>
+        <h3>4,200+ Edge Locations</h3>
+        <p>From remote VA clinics to urban hospitals to rural telemedicine — Akamai's global edge delivers consistent ANS diagnostic performance everywhere Welltory's users and PhysioPS clinics operate.</p>
+        <div class="edge-stat-pill"><span>🌐</span> 4,200+ PoPs worldwide</div>
+      </div>
+    </div>
+    <div class="reveal" style="margin-top:40px;padding:28px 24px;border-radius:20px;background:var(--bg-card);border:1px solid var(--border-accent);">
+      <div style="display:flex;align-items:flex-start;gap:20px;flex-wrap:wrap">
+        <div style="flex:1;min-width:200px">
+          <div class="section-tag" style="margin-bottom:8px">Why This Matters for Welltory</div>
+          <p style="font-size:.92rem;color:var(--text-muted);line-height:1.7">When PhysioPS's P&S labels flow back into Welltory via the Akamai edge network, Welltory's AI coaching engine gets real-time branch-specific context in under a millisecond. That means Welltory's Stress score doesn't just update — it gets <em style="color:var(--accent)">calibrated</em> against clinical-grade autonomic ground truth, making it the most accurate HRV-based wellness platform on Earth.</p>
+        </div>
+        <div style="flex:1;min-width:200px">
+          <div class="section-tag" style="margin-bottom:8px">The Competitive Moat</div>
+          <p style="font-size:.92rem;color:var(--text-muted);line-height:1.7">No competitor can match this stack: FDA-cleared P&S diagnostics + HumanOS AI + Akamai &lt;1ms edge + NVIDIA Blackwell GPU + post-quantum PHI protection. Any other wellness app trying to add clinical ANS would start 5–7 years behind PhysioPS on the science alone, and another 2–3 years behind on infrastructure.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== HUMANOS ===================== -->
+<section class="section" id="humanos">
+  <div class="container">
+    <div class="split-layout">
+      <div class="reveal-left">
+        <span class="section-tag">HumanOS · ANS Diagnostic Engine</span>
+        <h2 class="section-title">Upload .ans.<br><span class="gradient-text">Get a clinical masterpiece in 30 seconds.</span></h2>
+        <p class="section-desc">HumanOS transforms raw P&S data into a physician-ready 10-slide diagnostic report using Colombo's P&S methodology, spectral HRV decomposition, and AI pattern recognition — powered by NVIDIA Blackwell on Akamai edge.</p>
+        <div class="humanos-features">
+          <div class="humanos-feature">
+            <div class="humanos-feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+            <div>
+              <h4>P&S Spectral Analysis</h4>
+              <p>Frequency-domain decomposition isolates RFa and LFa across baseline, deep breathing, Valsalva, and standing challenges — revealing the exact autonomic pattern in seconds.</p>
+            </div>
+          </div>
+          <div class="humanos-feature">
+            <div class="humanos-feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-5"/></svg></div>
+            <div>
+              <h4>AI Pattern Recognition</h4>
+              <p>Automated detection of autonomic dysfunction subtypes: PS excess, alpha-sympathetic withdrawal, beta-sympathetic compensation, neuropathy staging, and orthostatic patterns.</p>
+            </div>
+          </div>
+          <div class="humanos-feature">
+            <div class="humanos-feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+            <div>
+              <h4>Instant Report Generation</h4>
+              <p>Drop a .ans file → get a 10-slide clinical deck in under 30 seconds. Every slide maps directly to Welltory's Stress/Energy/Health framework — no translation layer needed.</p>
+            </div>
+          </div>
+        </div>
+        <a href="https://ans-report-generator-beta.vercel.app/#/" target="_blank" rel="noopener" class="btn btn-primary" style="margin-top:8px">
+          <span>Try HumanOS Beta</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        </a>
+      </div>
+      <div class="reveal-right">
+        <div class="humanos-demo">
+          <div class="demo-header">
+            <div class="demo-dots"><span></span><span></span><span></span></div>
+            <span class="demo-title">HumanOS — ANS Diagnostic Engine</span>
+          </div>
+          <div class="demo-body">
+            <div class="demo-upload">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5" opacity="0.7"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              <p>Drop .ans file here — 10-slide clinical report in &lt;30s</p>
+              <div style="display:inline-block;margin-top:10px;padding:7px 20px;border-radius:8px;background:var(--gradient-brand);color:#060a10;font-weight:700;font-size:.82rem;cursor:pointer">Select .ans File</div>
+            </div>
+            <div class="demo-features">
+              <div class="demo-feat"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg><span>P&S Analysis</span></div>
+              <div class="demo-feat"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-5"/></svg><span>AI Diagnostics</span></div>
+              <div class="demo-feat"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg><span>&lt;30 second report</span></div>
+              <div class="demo-feat"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span>Akamai Edge</span></div>
+            </div>
+          </div>
+        </div>
+        <!-- Research publication -->
+        <div class="pub-card" style="margin-top:20px">
+          <div class="pub-badge">Peer Reviewed · Brain Medicine 2026</div>
+          <h4>Is it really treatment-resistant depression?</h4>
+          <p class="pub-title">P&S dysfunction as a treatment avenue for autonomic-driven depressive symptoms</p>
+          <p class="pub-authors">Pato MT, Colombo J, et al. — DOI: 10.61373/bm026r.0024</p>
+          <a class="pub-link" href="https://doi.org/10.61373/bm026r.0024" target="_blank" rel="noopener">Read the Study →</a>
+          <div class="research-stats" style="margin-top:14px">
+            <div class="rs-stat"><div class="rs-number">8,128</div><div class="rs-label">Patients enrolled</div></div>
+            <div class="rs-stat"><div class="rs-number">23.2→5.2</div><div class="rs-label">Symptom count drop</div></div>
+            <div class="rs-stat"><div class="rs-number">100%</div><div class="rs-label">Saw improvement</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== ACT 2: SARAH'S JOURNEY ===================== -->
+<section class="act2-section" id="act2">
+  <div class="container">
+    <div class="act2-header">
+      <div class="act2-label">Act II — The Scenario</div>
+      <h2 class="act2-title">Meet Sarah Chen.<br><span class="gradient-text">This is her nervous system story.</span></h2>
+      <p class="act2-sub">A real-world walkthrough of exactly what happens when PhysioPS and Welltory operate as one pipeline — from "I'm just stressed" to "I finally know what's wrong and it's being fixed."</p>
+    </div>
+
+    <!-- Persona -->
+    <div class="persona-card">
+      <div class="persona-avatar">S</div>
+      <div>
+        <div class="persona-name">Sarah Chen, 42</div>
+        <div class="persona-role">VP of Product · 400-person tech company · Silicon Valley</div>
+        <div class="persona-desc">Has used Welltory for 18 months. Tracks HRV daily. Consistently shows high stress, poor recovery, and declining energy — even after diet, sleep hygiene improvements, and therapy. Her BP crept from 118/76 to 138/88 over the last year. She's been told it's "just stress." She knows it isn't.</div>
+        <div class="persona-tags">
+          <span class="persona-tag">Welltory Premium User</span>
+          <span class="persona-tag">Chronic Stress · 14 months</span>
+          <span class="persona-tag">Creeping Hypertension</span>
+          <span class="persona-tag">Long-COVID possible (2022)</span>
+          <span class="persona-tag">High-performing · Exhausted</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="timeline" id="sarahTimeline">
+      <div class="timeline-item">
+        <div class="timeline-marker active"></div>
+        <span class="timeline-system w">Welltory · Week 1</span>
+        <div class="timeline-title">Welltory flags her ANS risk</div>
+        <p class="timeline-body">After 6 weeks of persistently low HRV (avg 28ms), poor recovery (&lt;40%), and self-reported BP readings, Welltory's risk model moves Sarah into the "autonomic dysfunction risk" cohort. She sees a card: <em style="color:var(--accent)">"Your nervous system pattern may be affecting your blood pressure and energy recovery. A 15-minute ANS test with our clinical partner could reveal the root cause."</em></p>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-marker"></div>
+        <span class="timeline-system w">Welltory → PhysioPS · Day 8</span>
+        <div class="timeline-title">Sarah accepts. The referral fires.</div>
+        <p class="timeline-body">With one tap, Sarah consents. Welltory sends her anonymized HRV summary, stress trajectory, and risk flags to PhysioPS via the Referral API — processed on Akamai edge in &lt;1ms. A PhysioPS-networked clinic 3 miles from her office confirms an appointment within 24 hours.</p>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-marker"></div>
+        <span class="timeline-system p">PhysioPS · Day 10</span>
+        <div class="timeline-title">15-minute P&S Monitoring session</div>
+        <p class="timeline-body">Sarah arrives. 15 minutes. No needles, no radiation. The CMU/RMU runs four challenge protocols. RFa and LFa are measured independently and simultaneously. Results: <strong style="color:var(--accent)">Parasympathetic excess at baseline, alpha-sympathetic withdrawal during standing, beta-sympathetic compensation across all challenges</strong> — the exact ANS triad that drives wired-but-tired fatigue, orthostatic BP instability, and "mystery" hypertension in post-COVID patients.</p>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-marker active"></div>
+        <span class="timeline-system p">PhysioPS · HumanOS · Day 10</span>
+        <div class="timeline-title">HumanOS generates the report in 27 seconds</div>
+        <p class="timeline-body">The .ans file is uploaded to HumanOS. NVIDIA Blackwell on Akamai edge processes it in 27 seconds. The physician gets a 10-slide clinical deck: PS excess pattern, alpha-sym withdrawal, orthostatic index, Long-COVID ANS signature match, and a targeted protocol recommendation: low-dose Midodrine 2.5mg, electrolyte replenishment, and compression therapy. No antidepressants. No "try harder with lifestyle."</p>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-marker"></div>
+        <span class="timeline-system j">Joint · Day 11</span>
+        <div class="timeline-title">PS/S labels push into Welltory</div>
+        <p class="timeline-body">PhysioPS sends the anonymized results back via the ps-results API. Welltory's AI receives: <code style="background:rgba(0,229,255,.1);color:var(--accent);padding:2px 6px;border-radius:4px;font-family:var(--font-mono);font-size:.8rem">ps_excess: true, alpha_sym_withdrawal: true, pattern: long_covid_ans</code>. Sarah's Today screen upgrades: her Stress score now shows "Autonomic recovery active" instead of just "High stress." Her energy goal shifts to specific ANS-calming protocols. She finally understands her own nervous system.</p>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-marker"></div>
+        <span class="timeline-system w">Welltory · Month 3</span>
+        <div class="timeline-title">Welltory tracks the protocol in real time</div>
+        <p class="timeline-body">Over 90 days, Welltory monitors Sarah's HRV, stress, sleep, energy, and BP daily. Her numbers shift: HRV from 28ms → 46ms, recovery from 38% → 71%, BP from 138/88 → 122/78. Welltory surfaces these improvements weekly, keeping her engaged and anchored to the platform. Her 12-month retention probability moves from 44% to 91%.</p>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-marker active"></div>
+        <span class="timeline-system p">PhysioPS · Month 6</span>
+        <div class="timeline-title">Follow-up P&S test confirms normalization</div>
+        <p class="timeline-body">Six months later, Sarah gets her second P&S test. PS excess has resolved. Alpha-sympathetic activity has normalized. Brain perfusion risk is low. Symptom count: 23 → 5. The test confirms what Welltory's telemetry suggested — and triggers another CPT-billable P&S session (~$250). PhysioPS earns, Welltory retains, and Sarah recommends both to every burned-out colleague she has.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== OUTCOMES GRID ===================== -->
+<section class="outcomes-section" id="outcomes">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-tag">Outcomes Grid</span>
+      <h2 class="section-title">What changes when <span class="gradient-text">the pipeline works</span>.</h2>
+      <p class="section-desc">Concrete before-and-after metrics across Sarah's journey — and what those metrics mean at scale across Welltory's 16M+ user base.</p>
+    </div>
+    <div class="outcomes-grid">
+      <div class="outcome-card" data-delay="0">
+        <div class="outcome-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+        <div class="outcome-label">HRV (ms avg)</div>
+        <div class="outcome-before">Before: 28ms (chronic low)</div>
+        <div class="outcome-after">After 90 days: 46ms (normal)</div>
+        <div class="outcome-delta">+64%</div>
+        <div class="outcome-caption">Welltory's primary signal improves, anchoring user retention and engagement.</div>
+      </div>
+      <div class="outcome-card" data-delay="80">
+        <div class="outcome-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+        <div class="outcome-label">Recovery Score</div>
+        <div class="outcome-before">Before: 38% (poor)</div>
+        <div class="outcome-after">After 90 days: 71% (good)</div>
+        <div class="outcome-delta">+87%</div>
+        <div class="outcome-caption">Users with improved recovery are 3.4x more likely to remain Welltory premium subscribers.</div>
+      </div>
+      <div class="outcome-card" data-delay="160">
+        <div class="outcome-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5"><path d="M9 12l2 2 4-4"/><path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
+        <div class="outcome-label">Blood Pressure</div>
+        <div class="outcome-before">Before: 138/88 mmHg</div>
+        <div class="outcome-after">After 90 days: 122/78 mmHg</div>
+        <div class="outcome-delta">−12%</div>
+        <div class="outcome-caption">Measurable cardiometabolic improvement opens employer and payer contract value.</div>
+      </div>
+      <div class="outcome-card" data-delay="0">
+        <div class="outcome-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
+        <div class="outcome-label">Symptom Count</div>
+        <div class="outcome-before">Before: 23.2 avg symptoms</div>
+        <div class="outcome-after">After P&S protocol: 5.2 symptoms</div>
+        <div class="outcome-delta">−78%</div>
+        <div class="outcome-caption">Colombo Brain Medicine cohort result replicated: 8,128 patients, 23.2 → 5.2 symptom drop.</div>
+      </div>
+      <div class="outcome-card" data-delay="80">
+        <div class="outcome-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+        <div class="outcome-label">Sleep Quality</div>
+        <div class="outcome-before">Before: poor — fragmented</div>
+        <div class="outcome-after">After protocol: 77% report improved sleep</div>
+        <div class="outcome-delta">+77%</div>
+        <div class="outcome-caption">77% of Brain Medicine cohort reported restored sleep — the #1 Welltory user-reported goal.</div>
+      </div>
+      <div class="outcome-card" data-delay="160">
+        <div class="outcome-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+        <div class="outcome-label">Welltory Retention (12mo)</div>
+        <div class="outcome-before">Before ANS program: 44% retention</div>
+        <div class="outcome-after">After ANS program: 91% projected</div>
+        <div class="outcome-delta">+107%</div>
+        <div class="outcome-caption">Users with a concrete physiological story and improving metrics don't cancel. They evangelize.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== REVENUE P&L ===================== -->
+<section class="pl-section" id="revenue">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-tag">Revenue Engine · Mini P&L</span>
+      <h2 class="section-title">The <span class="gradient-text">financial anatomy</span> of the alliance.</h2>
+      <p class="section-desc">What this partnership means in dollars — for Welltory, for PhysioPS, and for the employers and payers who will pay a premium for an ANS-calibrated wellness program that actually works.</p>
+    </div>
+
+    <div class="pl-table-wrapper reveal">
+      <table class="pl-table">
+        <thead>
+          <tr>
+            <th>Revenue Line</th>
+            <th>Who Earns</th>
+            <th>Year 1 Est.</th>
+            <th>Year 2 Est.</th>
+            <th>Year 3 Est.</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><div class="pl-label">Welltory Premium Upgrades<br><small style="color:var(--text-faint)">ANS program tier unlocks higher subscription pricing</small></div></td>
+            <td>Welltory</td>
+            <td class="pl-pos">+8–12% ARPU</td>
+            <td class="pl-pos">+14–18% ARPU</td>
+            <td class="pl-pos">+20–28% ARPU</td>
+          </tr>
+          <tr>
+            <td><div class="pl-label">Welltory 12-month Retention<br><small style="color:var(--text-faint)">Users in ANS program vs baseline cohort</small></div></td>
+            <td>Welltory</td>
+            <td class="pl-pos">44% → 71%</td>
+            <td class="pl-pos">71% → 84%</td>
+            <td class="pl-pos">84% → 91%</td>
+          </tr>
+          <tr>
+            <td><div class="pl-label">PhysioPS P&S Test Volume<br><small style="color:var(--text-faint)">~$250/test CPT-billable, up to 3x/year</small></div></td>
+            <td>PhysioPS</td>
+            <td class="pl-pos">Pilot cohort: ~$375K</td>
+            <td class="pl-pos">Scale: ~$2.8M</td>
+            <td class="pl-pos">Full: ~$12M+</td>
+          </tr>
+          <tr>
+            <td><div class="pl-label">Referral Revenue Share<br><small style="color:var(--text-faint)">PhysioPS pays Welltory % per completed P&S test sourced</small></div></td>
+            <td>Welltory</td>
+            <td class="pl-pos">TBD (negotiate)</td>
+            <td class="pl-pos">Pilot benchmark</td>
+            <td class="pl-pos">Contract term</td>
+          </tr>
+          <tr>
+            <td><div class="pl-label">Employer / Payer Bundle Contracts<br><small style="color:var(--text-faint)">Welltory dashboard + PhysioPS ANS diagnostics sold as one cardiometabolic risk product</small></div></td>
+            <td>Joint</td>
+            <td class="pl-pos">2–5 pilots</td>
+            <td class="pl-pos">~$3–8M ARR</td>
+            <td class="pl-pos">~$15–40M ARR</td>
+          </tr>
+          <tr>
+            <td><div class="pl-label">VA / DOD Clinical Contracts<br><small style="color:var(--text-faint)">3.5M+ veterans with burn pit exposure — PhysioPS ANS testing + Welltory recovery tracking</small></div></td>
+            <td>Joint</td>
+            <td class="pl-pos">LOI stage</td>
+            <td class="pl-pos">Pilot revenue</td>
+            <td class="pl-pos">$50M+ TAM</td>
+          </tr>
+          <tr class="pl-row-total">
+            <td colspan="2"><div class="pl-label">Combined Partnership Value (conservative)</div></td>
+            <td class="pl-pos">Pilot + validation</td>
+            <td class="pl-pos">$5–10M ARR</td>
+            <td class="pl-pos">$30–60M ARR</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="three-grid" style="margin-top:24px">
+      <div class="card-3d show" style="opacity:1">
+        <div class="card-accent-line"></div>
+        <div class="card-label">No Cannibalization</div>
+        <div class="card-heading">PhysioPS has zero consumer app</div>
+        <p class="card-body">PhysioPS operates exclusively in clinics, VA, and hospital systems. It has no direct-to-consumer app, no HRV wellness tracker, no Welltory-equivalent. There is no channel conflict — only channel expansion.</p>
+      </div>
+      <div class="card-3d show" style="opacity:1">
+        <div class="card-accent-line"></div>
+        <div class="card-label">Welltory Stays Wellness</div>
+        <div class="card-heading">No FDA reclassification risk</div>
+        <p class="card-body">Welltory never performs P&S diagnostics — only consumer wellness coaching. PhysioPS handles all FDA-regulated diagnostic activity. Welltory's regulatory position doesn't change. Its revenue position explodes.</p>
+      </div>
+      <div class="card-3d show" style="opacity:1">
+        <div class="card-accent-line"></div>
+        <div class="card-label">The MAHA Tailwind</div>
+        <div class="card-heading">RFK + proactive medicine = perfect timing</div>
+        <p class="card-body">The Make America Healthy Again initiative and RFK Jr.'s focus on root-cause medicine, reducing unnecessary medications, and preventing chronic disease creates a regulatory and public sentiment tailwind unlike any before. This partnership is the product of that moment.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== CTA ===================== -->
+<section class="cta-section" id="contact">
+  <div class="container">
+    <div class="neural-wave" style="margin-bottom:40px" aria-hidden="true"></div>
+    <h2 class="cta-title">Proactive healthcare<br><span class="gradient-text">starts with this call.</span></h2>
+    <p class="cta-desc">Welltory has the scale. PhysioPS has the clinical truth. There's one conversation that kicks off the partnership that changes the autonomic health game forever.</p>
+    <div class="cta-actions">
+      <a href="mailto:soleary@physiops.com" class="btn btn-primary btn-large">
+        <span>Request the Partnership Brief</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+      <a href="https://physiops-v2.vercel.app" target="_blank" rel="noopener" class="btn btn-ghost">Explore PhysioPS Platform</a>
+    </div>
+    <div class="cta-contact">
+      Steve O'Leary CBP · President & COO, Physio PS Inc. ·
+      <a href="mailto:soleary@physiops.com">soleary@physiops.com</a> ·
+      <a href="tel:603-320-0836">603-320-0836</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ===================== FOOTER ===================== -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="logo" style="margin-bottom:12px">
+          <svg width="32" height="32" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+            <circle cx="20" cy="20" r="18" stroke="var(--accent)" stroke-width="2" opacity="0.3"/>
+            <path d="M20 6 Q20 20, 12 28" stroke="var(--accent)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+            <path d="M20 6 Q20 20, 28 28" stroke="var(--accent-blue)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+            <circle cx="20" cy="14" r="3" fill="var(--accent)" opacity="0.8"/>
+          </svg>
+          <span class="logo-text">Physio<span class="logo-accent">PS</span></span>
+        </div>
+        <p class="footer-desc">Proactive means to a reactive healthcare world. The world's most advanced ANS diagnostic platform — built by the doctors who wrote the books.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Partnership</h4>
+        <a href="#act1">The Strategic Case</a>
+        <a href="#architecture">Data Flow</a>
+        <a href="#act2">Sarah's Journey</a>
+        <a href="#revenue">Revenue Engine</a>
+      </div>
+      <div class="footer-col">
+        <h4>PhysioPS</h4>
+        <a href="https://physiops-v2.vercel.app" target="_blank" rel="noopener">Platform</a>
+        <a href="https://physiops-v2.vercel.app#humanos" target="_blank" rel="noopener">HumanOS</a>
+        <a href="https://physio-ps-site.vercel.app" target="_blank" rel="noopener">Main Site</a>
+        <a href="https://ans-report-generator-beta.vercel.app" target="_blank" rel="noopener">HumanOS Beta</a>
+      </div>
+      <div class="footer-col">
+        <h4>Ecosystem</h4>
+        <a href="https://antimatterai.com" target="_blank" rel="noopener">AntimatterAI</a>
+        <a href="https://tryclinixai.com" target="_blank" rel="noopener">ClinixAI</a>
+        <a href="https://rrg.bio" target="_blank" rel="noopener">RRG Bio</a>
+        <a href="https://welltory.com" target="_blank" rel="noopener">Welltory ↗</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Physio PS, Inc. · Nirmata Holdings · FDA 510(k) Cleared · Partnership Brief — Confidential</p>
+      <p>Powered by Akamai Edge Compute · NVIDIA Blackwell GPU · HumanOS AI Engine</p>
+    </div>
+  </div>
+</footer>
+
 <script>
-// ===== PARTICLE CANVAS =====
-const pCanvas = document.getElementById('particleCanvas');
-const pCtx = pCanvas.getContext('2d');
-let particles = [];
-function resizeCanvas(){pCanvas.width=window.innerWidth;pCanvas.height=window.innerHeight;}
-resizeCanvas();
-window.addEventListener('resize',resizeCanvas);
-for(let i=0;i<55;i++){particles.push({x:Math.random()*window.innerWidth,y:Math.random()*window.innerHeight,vx:(Math.random()-0.5)*0.3,vy:(Math.random()-0.5)*0.3,r:Math.random()*2+0.5,c:Math.random()>0.5?'rgba(0,212,200,':'rgba(255,106,47,'});}
-function animParticles(){pCtx.clearRect(0,0,pCanvas.width,pCanvas.height);particles.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>pCanvas.width)p.vx*=-1;if(p.y<0||p.y>pCanvas.height)p.vy*=-1;pCtx.beginPath();pCtx.arc(p.x,p.y,p.r,0,Math.PI*2);pCtx.fillStyle=p.c+'0.6)';pCtx.fill();});particles.forEach((a,i)=>{particles.slice(i+1).forEach(b=>{const d=Math.hypot(a.x-b.x,a.y-b.y);if(d<100){pCtx.beginPath();pCtx.moveTo(a.x,a.y);pCtx.lineTo(b.x,b.y);pCtx.strokeStyle=`rgba(0,212,200,${0.08*(1-d/100)})`;pCtx.lineWidth=0.5;pCtx.stroke();}});});requestAnimationFrame(animParticles);}
-animParticles();
+// ============ PARTICLES WITH MOUSE REPULSION ============
+(function(){
+  const canvas = document.getElementById('particleCanvas');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [];
+  const mouse = {x:null,y:null,r:100};
 
-// ===== TAB NAVIGATION =====
-const screenIds=['screen-home','screen-ans','screen-measure','screen-devices','screen-insights'];
-function switchTab(idx,btn){
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-  document.getElementById(screenIds[idx]).classList.add('active');
-  btn.classList.add('active');
-}
+  function resize(){
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+    initParticles();
+  }
 
-// ===== GAUGE ANIMATION =====
-function animateGauges(){
-  const circ=217;
-  document.getElementById('gaugeSymp').setAttribute('stroke-dasharray',`${circ*0.34} ${circ}`);
-  document.getElementById('gaugePara').setAttribute('stroke-dasharray',`${217*0.46*0.66} ${217*0.46}`);
-  document.getElementById('homeScore').textContent='88';
+  window.addEventListener('resize', resize);
+  window.addEventListener('mousemove', e=>{mouse.x=e.clientX;mouse.y=e.clientY});
+  window.addEventListener('mouseleave', ()=>{mouse.x=null;mouse.y=null});
+
+  function initParticles(){
+    particles = [];
+    const n = Math.floor(W*H/9000);
+    for(let i=0;i<n;i++){
+      particles.push({
+        x:Math.random()*W,y:Math.random()*H,
+        vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,
+        r:Math.random()*1.5+.5,
+        hue:Math.random()<.7?180:210
+      });
+    }
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    particles.forEach(p=>{
+      if(mouse.x!==null){
+        const dx=p.x-mouse.x, dy=p.y-mouse.y, d=Math.hypot(dx,dy);
+        if(d<mouse.r&&d>.1){
+          const f=(mouse.r-d)/mouse.r, a=Math.atan2(dy,dx);
+          p.vx+=Math.cos(a)*f*.7; p.vy+=Math.sin(a)*f*.7;
+        }
+      }
+      p.x+=p.vx; p.y+=p.vy;
+      p.vx*=.97; p.vy*=.97;
+      if(p.x<0)p.x=W; if(p.x>W)p.x=0;
+      if(p.y<0)p.y=H; if(p.y>H)p.y=0;
+
+      const grd=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*3.5);
+      grd.addColorStop(0,`hsla(${p.hue},100%,75%,.7)`);
+      grd.addColorStop(1,`hsla(${p.hue},100%,75%,0)`);
+      ctx.fillStyle=grd;
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  resize(); draw();
+})();
+
+// ============ LOADER ============
+window.addEventListener('load',()=>{
   setTimeout(()=>{
-    document.getElementById('paraBar').style.width='66%';
-    document.getElementById('sympBar').style.width='34%';
-    document.getElementById('vagalBar').style.width='78%';
-    document.getElementById('cohBar').style.width='92%';
-  },400);
-}
-setTimeout(animateGauges,600);
+    const el=document.getElementById('loader');
+    if(el) el.classList.add('hide');
+  },2000);
+});
 
-// ===== LIVE ECG =====
-const ecgCanvas=document.getElementById('ecgCanvas');
-const eCtx=ecgCanvas.getContext('2d');
-ecgCanvas.width=ecgCanvas.offsetWidth*2;ecgCanvas.height=120;
-let ecgData=[];let ecgX=0;
-const ecgTemplate=[0,0,0,0,-2,0,0,18,-10,2,1,1,0,0,-1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
-let templateIdx=0;let beatCooldown=0;
-function drawECG(){
-  ecgX+=2;
-  if(ecgX>ecgCanvas.width)ecgX=0;
-  let val=0;
-  if(beatCooldown<=0){val=ecgTemplate[templateIdx]*2;templateIdx++;if(templateIdx>=ecgTemplate.length){templateIdx=0;beatCooldown=Math.floor(60+(Math.random()*10-5));}}else{beatCooldown--;}
-  ecgData.push({x:ecgX,y:60+val*(ecgX%2?1.1:1)});
-  if(ecgData.length>ecgCanvas.width/2)ecgData.shift();
-  eCtx.clearRect(0,0,ecgCanvas.width,ecgCanvas.height);
-  if(ecgData.length<2)return;
-  eCtx.shadowColor='#00d4c8';eCtx.shadowBlur=8;
-  eCtx.beginPath();eCtx.strokeStyle='#00d4c8';eCtx.lineWidth=2;
-  eCtx.moveTo(ecgData[0].x,ecgData[0].y);
-  ecgData.forEach(p=>eCtx.lineTo(p.x,p.y));
-  eCtx.stroke();eCtx.shadowBlur=0;
-  // Sweep line
-  eCtx.beginPath();eCtx.strokeStyle='rgba(0,212,200,0.3)';eCtx.lineWidth=1;
-  eCtx.moveTo(ecgX,0);eCtx.lineTo(ecgX,ecgCanvas.height);eCtx.stroke();
-  requestAnimationFrame(drawECG);
+// ============ COUNTER ANIMATION ============
+function animateCounter(el){
+  const target=parseInt(el.dataset.target,10);
+  const duration=1800;
+  const step=target/duration*16;
+  let cur=0;
+  const tick=()=>{
+    cur=Math.min(cur+step,target);
+    el.textContent=Math.floor(cur).toLocaleString();
+    if(cur<target) requestAnimationFrame(tick);
+    else el.textContent=target.toLocaleString();
+  };
+  requestAnimationFrame(tick);
 }
-drawECG();
 
-// ===== LIVE BPM =====
-let baseBPM=62;
-setInterval(()=>{
-  const bpm=baseBPM+Math.floor(Math.random()*6-3);
-  document.getElementById('liveBPM').textContent=bpm;
-  document.getElementById('kpiBPM').textContent=bpm;
-},2000);
+const counterObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){animateCounter(e.target);counterObs.unobserve(e.target)}});
+},{threshold:.5});
+document.querySelectorAll('.stat-number[data-target]').forEach(el=>counterObs.observe(el));
 
-// ===== DEVICE ACTIONS =====
-function selectDev(el){
-  document.querySelectorAll('.dev-btn').forEach(b=>b.classList.remove('active'));
-  el.classList.add('active');
-}
-function startMeasure(){
-  const btn=document.querySelector('.start-btn');
-  btn.innerHTML='<svg viewBox="0 0 24 24" style="width:20px;height:20px;stroke:#000;fill:none;stroke-width:2.5"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg> Measuring…';
-  btn.style.background='linear-gradient(135deg,var(--orange),#cc4400)';
-  btn.style.boxShadow='0 8px 32px rgba(255,106,47,0.3)';
-  setTimeout(()=>{
-    btn.innerHTML='<svg viewBox="0 0 24 24" style="width:20px;height:20px;stroke:#000;fill:none;stroke-width:2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg> Begin ANS Measurement';
-    btn.style.background='linear-gradient(135deg,var(--teal),#00b4aa)';
-    btn.style.boxShadow='0 8px 32px rgba(0,212,200,0.3)';
-  },4000);
-}
+// ============ SCROLL REVEAL ============
+const revealObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('show');revealObs.unobserve(e.target)}});
+},{threshold:.12,rootMargin:'0px 0px -40px 0px'});
+
+document.querySelectorAll('.reveal,.reveal-left,.reveal-right').forEach(el=>revealObs.observe(el));
+
+// Stat blocks
+const sbObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      const d=Number(e.target.dataset.delay||0);
+      setTimeout(()=>e.target.classList.add('show'),d);
+      sbObs.unobserve(e.target);
+    }
+  });
+},{threshold:.2});
+document.querySelectorAll('.stat-block,.feature-card,.edge-card,.outcome-card,.arch-block').forEach(el=>sbObs.observe(el));
+
+// Timeline stagger
+const tlObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      const items=[...e.target.querySelectorAll('.timeline-item')];
+      items.forEach((item,i)=>setTimeout(()=>item.classList.add('show'),i*140));
+      tlObs.unobserve(e.target);
+    }
+  });
+},{threshold:.08});
+const tl=document.getElementById('sarahTimeline');
+if(tl) tlObs.observe(tl);
+
+// Cards stagger
+const cObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      const cards=[...e.target.querySelectorAll('.card-3d')];
+      cards.forEach((c,i)=>setTimeout(()=>c.classList.add('show'),i*100));
+      cObs.unobserve(e.target);
+    }
+  });
+},{threshold:.08});
+document.querySelectorAll('.three-grid').forEach(g=>cObs.observe(g));
+
+// Persona + reveal for act2
+const pObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){e.target.classList.add('show');pObs.unobserve(e.target)}
+  });
+},{threshold:.18});
+document.querySelectorAll('.persona-card').forEach(el=>pObs.observe(el));
+
+// ============ 3D CARD TILT ============
+document.querySelectorAll('.card-3d').forEach(card=>{
+  card.addEventListener('pointermove',e=>{
+    const r=card.getBoundingClientRect();
+    const rx=((e.clientY-r.top)/r.height-.5)*-14;
+    const ry=((e.clientX-r.left)/r.width-.5)*14;
+    card.style.transform=`perspective(1000px) rotateX(${rx}deg) rotateY(${ry}deg) scale3d(1.02,1.02,1.02)`;
+  });
+  card.addEventListener('pointerleave',()=>{
+    card.style.transform='perspective(1000px) rotateX(0) rotateY(0) scale3d(1,1,1)';
+  });
+});
+
+// ============ STICKY NAV SCROLL ============
+const hdr=document.getElementById('mainHeader');
+let lastY=0;
+window.addEventListener('scroll',()=>{
+  const y=window.scrollY;
+  if(y>100&&y>lastY) hdr.style.transform='translateY(-100%)';
+  else hdr.style.transform='translateY(0)';
+  lastY=y;
+},{passive:true});
+hdr.style.transition='transform .35s cubic-bezier(.16,1,.3,1)';
 </script>
 </body>
 </html>
