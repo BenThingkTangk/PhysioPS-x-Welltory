@@ -5,68 +5,94 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>PhysioPS × Welltory — Autonomic Alliance Brief 2026</title>
 <meta name="description" content="PhysioPS partnership brief for Welltory. FDA-cleared P&S monitoring + Welltory AI copilot = the autonomic operating system for 90M+ undiagnosed Americans."/>
+<meta name="theme-color" content="#030B14"/>
+<link rel="icon" type="image/svg+xml" href="pulse-node/favicons/favicon.svg"/>
+<link rel="icon" type="image/png" sizes="32x32" href="pulse-node/favicons/favicon-32.png"/>
+<link rel="icon" type="image/png" sizes="16x16" href="pulse-node/favicons/favicon-16.png"/>
+<link rel="icon" href="pulse-node/favicons/favicon.ico" sizes="any"/>
+<link rel="apple-touch-icon" sizes="192x192" href="pulse-node/app-icons/app-icon-192.png"/>
+<link rel="apple-touch-icon" sizes="512x512" href="pulse-node/app-icons/app-icon-512.png"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
-<link href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@400,500,700,800,900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@500,600,700,800&f[]=satoshi@400,500,700&display=swap" rel="stylesheet"/>
 <style>
 :root{
-  --accent:#00e5ff;--accent-dim:#00b8cc;--accent-blue:#0077ff;
-  --accent-glow:rgba(0,229,255,0.15);--accent-glow-strong:rgba(0,229,255,0.30);
-  --bg:#060a10;--bg-elevated:#0c1220;--bg-card:#0f1628;--bg-card-hover:#131c34;
-  --surface:#111827;--surface-2:#1a2540;
-  --text:#e8edf5;--text-muted:#8892a8;--text-faint:#4a5568;
-  --border:rgba(255,255,255,0.06);--border-accent:rgba(0,229,255,0.15);
-  --gradient-brand:linear-gradient(135deg,#00e5ff 0%,#0077ff 100%);
-  --gradient-hero:linear-gradient(180deg,rgba(6,10,16,.3) 0%,rgba(6,10,16,.7) 40%,rgba(6,10,16,.95) 80%,#060a10 100%);
-  --gradient-neural:linear-gradient(90deg,transparent 0%,#00e5ff 20%,#0077ff 50%,#00e5ff 80%,transparent 100%);
-  --color-parasympathetic:#00e5ff;--color-sympathetic:#0077ff;--color-balance:#7c3aed;
-  --color-hrv:#10b981;--color-warning:#f59e0b;--color-danger:#ef4444;--color-success:#22c55e;
+  /* PhysioPS × HumanOS Kit v2.3 — Pulse Node palette */
+  --color-bg-void:#030B14;--color-bg-deep:#05101D;--color-bg-base:#07121F;
+  --color-surface-0:#0D1B2A;--color-surface-ink:#020812;
+  --color-text-primary:#F0F4FF;--color-text-secondary:#A7B4C8;--color-text-muted:#69758A;
+  --color-parasym:#00E5A0;--color-sympathetic:#4A9EFF;--color-hrv:#A855F7;--color-baseline:#64748B;
+  --color-status-optimal:#22C55E;--color-status-watch:#F59E0B;--color-status-critical:#EF4444;--color-status-cleared:#10B981;
+
+  /* Legacy aliases (preserve existing rule names) mapped to kit tokens */
+  --accent:#00E5A0;--accent-dim:#00B884;--accent-blue:#4A9EFF;--accent-purple:#A855F7;
+  --accent-glow:rgba(0,229,160,0.15);--accent-glow-strong:rgba(0,229,160,0.30);
+  --bg:#030B14;--bg-elevated:#0D1B2A;--bg-card:#0D1B2A;--bg-card-hover:#11233A;
+  --surface:#0D1B2A;--surface-2:#11233A;
+  --text:#F0F4FF;--text-muted:#A7B4C8;--text-faint:#69758A;
+  --border:rgba(255,255,255,0.06);--border-accent:rgba(0,229,160,0.22);
+  --gradient-brand:linear-gradient(135deg,#00E5A0 0%,#4A9EFF 60%,#A855F7 100%);
+  --gradient-hero:linear-gradient(180deg,rgba(3,11,20,.25) 0%,rgba(3,11,20,.7) 40%,rgba(3,11,20,.95) 80%,#030B14 100%);
+  --gradient-neural:linear-gradient(90deg,transparent 0%,#00E5A0 20%,#4A9EFF 50%,#A855F7 80%,transparent 100%);
+  --color-parasympathetic:#00E5A0;--color-sympathetic:#4A9EFF;--color-balance:#A855F7;
+  --color-hrv:#A855F7;--color-warning:#F59E0B;--color-danger:#EF4444;--color-success:#22C55E;
+
+  /* Motion tokens (kit v2.3) */
+  --motion-instant:80ms;--motion-fast:160ms;--motion-base:280ms;--motion-slow:520ms;
+  --motion-diagnostic:900ms;--motion-cinematic:1400ms;
+  --ease-out:cubic-bezier(0.16,1,0.3,1);--ease-in-out:cubic-bezier(0.65,0,0.35,1);
+  --ease-signal:cubic-bezier(0.22,1,0.36,1);--ease-humanos:cubic-bezier(0.2,0.8,0.2,1);
+
   --font-display:'Cabinet Grotesk','Inter',sans-serif;
-  --font-body:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+  --font-body:'Satoshi','Inter',-apple-system,BlinkMacSystemFont,sans-serif;
   --font-mono:'JetBrains Mono','Fira Code',monospace;
   --r:clamp(0rem,0.7rem + 0.25vw,0.875rem);
   --space-4:1rem;--space-6:1.5rem;--space-8:2rem;--space-12:3rem;--space-16:4rem;--space-20:5rem;
+}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 body{min-height:100vh;font-family:var(--font-body);color:var(--text);background:var(--bg);overflow-x:hidden;line-height:1.6}
 
 /* ============ PARTICLE CANVAS ============ */
-#particleCanvas{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.55}
+#particleCanvas{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.32}
 
 /* ============ LOADER ============ */
 #loader{
   position:fixed;inset:0;z-index:100;
   display:flex;align-items:center;justify-content:center;
-  background:radial-gradient(circle at 20% 0%,#071216 0,#060a10 50%,#04080e 100%);
+  background:radial-gradient(circle at 20% 0%,#07121F 0,#030B14 50%,#020812 100%);
   transition:opacity .9s cubic-bezier(.16,1,.3,1),visibility .9s,transform .9s cubic-bezier(.16,1,.3,1);
 }
 #loader.hide{opacity:0;visibility:hidden;transform:translateY(-4%)}
 .loader-card{
   width:min(500px,92vw);border-radius:32px;padding:32px 28px 26px;position:relative;overflow:hidden;
-  background:radial-gradient(circle at 0 0,rgba(0,229,255,.25) 0,transparent 55%),
-             radial-gradient(circle at 100% 100%,rgba(0,119,255,.22) 0,transparent 55%),
+  background:radial-gradient(circle at 0 0,rgba(0,229,160,.25) 0,transparent 55%),
+             radial-gradient(circle at 100% 100%,rgba(74,158,255,.22) 0,transparent 55%),
              var(--bg-card);
-  border:1px solid rgba(0,229,255,.35);
-  box-shadow:0 0 60px rgba(0,229,255,.5),0 40px 120px rgba(0,0,0,1),inset 0 1px 0 rgba(255,255,255,.12);
+  border:1px solid rgba(0,229,160,.35);
+  box-shadow:0 0 60px rgba(0,229,160,.5),0 40px 120px rgba(0,0,0,1),inset 0 1px 0 rgba(255,255,255,.12);
 }
 .loader-orbit{
   position:absolute;inset:-50%;
-  background:conic-gradient(from 200deg,rgba(0,229,255,.18),transparent 38%,rgba(0,119,255,.2),transparent 78%,rgba(0,229,255,.22));
+  background:conic-gradient(from 200deg,rgba(0,229,160,.18),transparent 38%,rgba(74,158,255,.2),transparent 78%,rgba(0,229,160,.22));
   animation:spin 12s linear infinite;mix-blend-mode:screen;
 }
 @keyframes spin{to{transform:rotate(360deg)}}
 .loader-inner{position:relative;z-index:1}
 .loader-logo{display:flex;align-items:center;gap:12px;margin-bottom:16px}
-.loader-logo-svg{animation:logoPulse 2s ease-in-out infinite}
-@keyframes logoPulse{0%,100%{filter:drop-shadow(0 0 6px var(--accent))}50%{filter:drop-shadow(0 0 14px var(--accent))}}
+.loader-logo-svg{animation:logoPulse 2.4s ease-in-out infinite;display:block}
+@keyframes logoPulse{0%,100%{filter:drop-shadow(0 0 6px rgba(0,229,160,.6))}50%{filter:drop-shadow(0 0 18px rgba(74,158,255,.75))}}
+.logo-mark{display:block;flex-shrink:0;filter:drop-shadow(0 0 8px rgba(0,229,160,.25))}
 .loader-wordmark{font-family:var(--font-display);font-size:1.15rem;font-weight:800;letter-spacing:-.02em}
 .loader-wordmark span{background:var(--gradient-brand);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .loader-tag{font-family:var(--font-mono);font-size:.72rem;text-transform:uppercase;letter-spacing:.18em;color:var(--text-muted);margin-bottom:6px}
 .loader-title{font-family:var(--font-display);font-size:1.1rem;font-weight:700;margin-bottom:6px}
 .loader-sub{font-size:.84rem;color:var(--text-muted);max-width:28rem}
-.loader-bar{margin-top:18px;height:5px;border-radius:999px;background:rgba(0,0,0,.6);overflow:hidden;box-shadow:inset 0 0 0 1px rgba(0,229,255,.4)}
+.loader-bar{margin-top:18px;height:5px;border-radius:999px;background:rgba(0,0,0,.6);overflow:hidden;box-shadow:inset 0 0 0 1px rgba(0,229,160,.4)}
 .loader-fill{height:100%;background:var(--gradient-brand);transform-origin:left;animation:fill 2.6s ease-in-out infinite;border-radius:999px}
 @keyframes fill{0%{transform:scaleX(.04)}40%{transform:scaleX(1)}60%{transform:scaleX(.6)}100%{transform:scaleX(1)}}
 
@@ -74,7 +100,7 @@ body{min-height:100vh;font-family:var(--font-body);color:var(--text);background:
 .header{
   position:sticky;top:0;z-index:50;padding:14px 0 10px;
   backdrop-filter:blur(24px) saturate(160%);
-  background:linear-gradient(to bottom,rgba(6,10,16,.98),rgba(6,10,16,.9),transparent);
+  background:linear-gradient(to bottom,rgba(3,11,20,.98),rgba(3,11,20,.9),transparent);
   border-bottom:1px solid var(--border);
   transition:background .3s;
 }
@@ -85,7 +111,7 @@ body{min-height:100vh;font-family:var(--font-body);color:var(--text);background:
 .nav-links{display:flex;align-items:center;gap:4px;flex-wrap:wrap}
 .nav-link{font-size:.82rem;font-weight:500;color:var(--text-muted);text-decoration:none;padding:7px 13px;border-radius:8px;transition:color .2s,background .2s;font-family:var(--font-body)}
 .nav-link:hover{color:var(--text);background:rgba(255,255,255,.06)}
-.nav-cta{background:var(--gradient-brand);color:#060a10!important;border-radius:8px;font-weight:700;font-size:.8rem!important;padding:7px 16px!important}
+.nav-cta{background:var(--gradient-brand);color:#030B14!important;border-radius:8px;font-weight:700;font-size:.8rem!important;padding:7px 16px!important}
 .nav-cta:hover{opacity:.88}
 
 /* ============ CONTAINER ============ */
@@ -97,33 +123,37 @@ body{min-height:100vh;font-family:var(--font-body);color:var(--text);background:
 .hero-bg-image{
   position:absolute;inset:0;
   background:
-    radial-gradient(circle at 15% 20%,rgba(0,229,255,.28) 0,transparent 55%),
-    radial-gradient(circle at 80% 10%,rgba(0,119,255,.24) 0,transparent 60%),
-    radial-gradient(circle at 60% 80%,rgba(124,58,237,.22) 0,transparent 55%);
-  opacity:.9;
+    radial-gradient(ellipse at 18% 22%,rgba(0,229,160,.26) 0,transparent 55%),
+    radial-gradient(ellipse at 82% 12%,rgba(74,158,255,.22) 0,transparent 60%),
+    radial-gradient(ellipse at 58% 82%,rgba(168,85,247,.20) 0,transparent 55%),
+    radial-gradient(circle at 50% 50%,rgba(13,27,42,.55) 0,transparent 70%);
+  opacity:.95;
 }
-.hero-bg-grid{
+/* Signal glow — replaces former grid layer (kit v2.3 mandate: no visible grids) */
+.hero-bg-signal{
   position:absolute;inset:0;
-  background-image:linear-gradient(rgba(0,229,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,.025) 1px,transparent 1px);
-  background-size:60px 60px;
+  background:
+    radial-gradient(circle at 50% 40%,rgba(0,229,160,.08) 0,transparent 40%),
+    radial-gradient(circle at 50% 60%,rgba(74,158,255,.06) 0,transparent 45%);
   mask-image:radial-gradient(ellipse at 50% 50%,black 20%,transparent 80%);
+  pointer-events:none;
 }
 .hero-overlay{position:absolute;inset:0;background:var(--gradient-hero)}
 .hero-content{max-width:900px;margin:0 auto;text-align:center;position:relative;z-index:1}
 .hero-badge{
   display:inline-flex;align-items:center;gap:10px;padding:6px 18px 6px 8px;
-  border-radius:999px;border:1px solid rgba(0,229,255,.35);
-  background:rgba(6,10,16,.92);box-shadow:0 0 0 1px rgba(0,229,255,.15);
+  border-radius:999px;border:1px solid rgba(0,229,160,.35);
+  background:rgba(3,11,20,.92);box-shadow:0 0 0 1px rgba(0,229,160,.15);
   font-family:var(--font-mono);font-size:.74rem;text-transform:uppercase;letter-spacing:.16em;color:var(--text-muted);
   margin-bottom:20px;
 }
 .badge-dot{
   width:20px;height:20px;border-radius:999px;
   background:radial-gradient(circle at 30% 25%,var(--accent) 0,transparent 60%),radial-gradient(circle at 70% 75%,var(--accent-blue) 0,transparent 70%);
-  box-shadow:0 0 16px rgba(0,229,255,.9);
+  box-shadow:0 0 16px rgba(0,229,160,.9);
   position:relative;flex-shrink:0;
 }
-.badge-dot::after{content:"";position:absolute;inset:-6px;border-radius:inherit;border:2px solid rgba(0,229,255,.5);animation:ping 1.8s cubic-bezier(.21,.6,.35,1) infinite}
+.badge-dot::after{content:"";position:absolute;inset:-6px;border-radius:inherit;border:2px solid rgba(0,229,160,.5);animation:ping 1.8s cubic-bezier(.21,.6,.35,1) infinite}
 @keyframes ping{0%{transform:scale(.5);opacity:.9}70%{transform:scale(1.5);opacity:0}100%{transform:scale(1.5);opacity:0}}
 .hero-tag-row{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:14px}
 .hero-tag{font-family:var(--font-mono);font-size:.72rem;text-transform:uppercase;letter-spacing:.15em;color:var(--accent);padding:3px 10px;border:1px solid var(--border-accent);border-radius:4px}
@@ -132,8 +162,8 @@ body{min-height:100vh;font-family:var(--font-body);color:var(--text);background:
 .hero-subtitle{font-size:clamp(1rem,1.1vw,1.25rem);color:var(--text-muted);max-width:640px;margin:0 auto 28px;line-height:1.7}
 .hero-actions{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;margin-bottom:48px}
 .btn{display:inline-flex;align-items:center;gap:8px;border-radius:10px;font-family:var(--font-body);font-weight:600;font-size:.88rem;text-decoration:none;transition:all .22s;cursor:pointer;border:none}
-.btn-primary{background:var(--gradient-brand);color:#060a10;padding:12px 28px;box-shadow:0 0 20px rgba(0,229,255,.5),0 8px 30px rgba(0,0,0,.8)}
-.btn-primary:hover{transform:translateY(-1px);box-shadow:0 0 32px rgba(0,229,255,.8),0 12px 40px rgba(0,0,0,.9)}
+.btn-primary{background:var(--gradient-brand);color:#030B14;padding:12px 28px;box-shadow:0 0 20px rgba(0,229,160,.5),0 8px 30px rgba(0,0,0,.8)}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 0 32px rgba(0,229,160,.8),0 12px 40px rgba(0,0,0,.9)}
 .btn-ghost{background:transparent;color:var(--text);padding:11px 24px;border:1px solid var(--border)}
 .btn-ghost:hover{border-color:var(--border-accent);background:var(--accent-glow);transform:translateY(-1px)}
 .hero-stats{display:flex;justify-content:center;gap:48px;flex-wrap:wrap;padding:24px;background:rgba(15,22,40,.6);border:1px solid var(--border);border-radius:20px;backdrop-filter:blur(16px)}
@@ -245,7 +275,7 @@ body{min-height:100vh;font-family:var(--font-body);color:var(--text);background:
 .arch-owner{display:inline-block;margin-top:8px;padding:2px 8px;border-radius:4px;font-family:var(--font-mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase}
 .arch-owner.welltory{background:rgba(16,185,129,.15);color:#10b981;border:1px solid rgba(16,185,129,.3)}
 .arch-owner.physiops{background:var(--accent-glow);color:var(--accent);border:1px solid var(--border-accent)}
-.arch-owner.joint{background:rgba(124,58,237,.15);color:#a78bfa;border:1px solid rgba(124,58,237,.3)}
+.arch-owner.joint{background:rgba(168,85,247,.15);color:#a78bfa;border:1px solid rgba(168,85,247,.3)}
 
 /* ============ EDGE COMPUTE ============ */
 .edge-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
@@ -282,7 +312,7 @@ body{min-height:100vh;font-family:var(--font-body);color:var(--text);background:
   opacity:0;
 }
 .card-3d.show{opacity:1}
-.card-3d:hover{border-color:var(--border-accent);box-shadow:0 30px 90px rgba(0,229,255,.08)}
+.card-3d:hover{border-color:var(--border-accent);box-shadow:0 30px 90px rgba(0,229,160,.08)}
 .card-3d::before{
   content:"";position:absolute;top:0;left:-60%;width:50%;height:2px;
   background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:0;
@@ -302,8 +332,8 @@ body{min-height:100vh;font-family:var(--font-body);color:var(--text);background:
 .act2-section::before{
   content:"";position:absolute;inset:0;
   background:
-    radial-gradient(circle at 0% 50%,rgba(0,229,255,.12) 0,transparent 55%),
-    radial-gradient(circle at 100% 40%,rgba(0,119,255,.1) 0,transparent 55%);
+    radial-gradient(circle at 0% 50%,rgba(0,229,160,.12) 0,transparent 55%),
+    radial-gradient(circle at 100% 40%,rgba(74,158,255,.1) 0,transparent 55%);
   pointer-events:none;
 }
 .act2-header{margin-bottom:60px}
@@ -317,7 +347,7 @@ body{min-height:100vh;font-family:var(--font-body);color:var(--text);background:
   background:var(--bg-card);border:1px solid var(--border-accent);
   margin-bottom:40px;
   display:flex;align-items:flex-start;gap:20px;
-  box-shadow:0 0 40px rgba(0,229,255,.06);
+  box-shadow:0 0 40px rgba(0,229,160,.06);
   opacity:0;transform:translateY(18px);transition:opacity .6s,transform .6s;
 }
 .persona-card.show{opacity:1;transform:translateY(0)}
@@ -325,7 +355,7 @@ body{min-height:100vh;font-family:var(--font-body);color:var(--text);background:
   width:56px;height:56px;border-radius:999px;flex-shrink:0;
   background:var(--gradient-brand);
   display:flex;align-items:center;justify-content:center;
-  font-family:var(--font-display);font-size:1.4rem;font-weight:900;color:#060a10;
+  font-family:var(--font-display);font-size:1.4rem;font-weight:900;color:#030B14;
 }
 .persona-name{font-family:var(--font-display);font-size:1.05rem;font-weight:700;margin-bottom:4px}
 .persona-role{font-family:var(--font-mono);font-size:.74rem;color:var(--accent);text-transform:uppercase;letter-spacing:.14em;margin-bottom:8px}
@@ -345,13 +375,13 @@ body{min-height:100vh;font-family:var(--font-body);color:var(--text);background:
   position:absolute;left:-32px;top:4px;
   width:16px;height:16px;border-radius:999px;
   border:2px solid var(--accent);background:var(--bg-elevated);
-  box-shadow:0 0 12px rgba(0,229,255,.6);
+  box-shadow:0 0 12px rgba(0,229,160,.6);
 }
-.timeline-marker.active{background:var(--accent);box-shadow:0 0 18px rgba(0,229,255,.9)}
+.timeline-marker.active{background:var(--accent);box-shadow:0 0 18px rgba(0,229,160,.9)}
 .timeline-system{font-family:var(--font-mono);font-size:.7rem;text-transform:uppercase;letter-spacing:.16em;margin-bottom:4px;display:inline-block;padding:2px 8px;border-radius:4px}
 .timeline-system.w{background:rgba(16,185,129,.15);color:#10b981;border:1px solid rgba(16,185,129,.3)}
 .timeline-system.p{background:var(--accent-glow);color:var(--accent);border:1px solid var(--border-accent)}
-.timeline-system.j{background:rgba(124,58,237,.15);color:#a78bfa;border:1px solid rgba(124,58,237,.3)}
+.timeline-system.j{background:rgba(168,85,247,.15);color:#a78bfa;border:1px solid rgba(168,85,247,.3)}
 .timeline-title{font-family:var(--font-display);font-size:1rem;font-weight:700;margin:6px 0 4px;color:var(--text)}
 .timeline-body{font-size:.88rem;color:var(--text-muted);line-height:1.6}
 
@@ -381,14 +411,14 @@ body{min-height:100vh;font-family:var(--font-body);color:var(--text);background:
 .pl-section{padding:clamp(60px,8vw,100px) 0;background:var(--bg-elevated);position:relative;z-index:1}
 .pl-table-wrapper{border-radius:20px;overflow:hidden;border:1px solid var(--border)}
 .pl-table{width:100%;border-collapse:collapse;font-size:.88rem}
-.pl-table thead tr{background:linear-gradient(90deg,rgba(0,229,255,.12),rgba(0,119,255,.1));border-bottom:1px solid var(--border-accent)}
+.pl-table thead tr{background:linear-gradient(90deg,rgba(0,229,160,.12),rgba(74,158,255,.1));border-bottom:1px solid var(--border-accent)}
 .pl-table th{font-family:var(--font-mono);font-size:.74rem;text-transform:uppercase;letter-spacing:.14em;color:var(--accent);padding:14px 20px;text-align:left;font-weight:600}
 .pl-table td{padding:14px 20px;border-bottom:1px solid var(--border);color:var(--text-muted);vertical-align:top}
 .pl-table tr:last-child td{border-bottom:none}
-.pl-table tr:hover td{background:rgba(0,229,255,.03)}
+.pl-table tr:hover td{background:rgba(0,229,160,.03)}
 .pl-label{font-weight:600;color:var(--text);font-family:var(--font-body)}
 .pl-pos{color:var(--color-success);font-weight:600;font-family:var(--font-display)}
-.pl-row-total{background:rgba(0,229,255,.04)!important}
+.pl-row-total{background:rgba(0,229,160,.04)!important}
 .pl-row-total td{border-top:1px solid var(--border-accent)!important;color:var(--text)!important;font-weight:700!important}
 
 /* ============ HUMANOS SECTION ============ */
@@ -427,7 +457,7 @@ body{min-height:100vh;font-family:var(--font-body);color:var(--text);background:
 /* ============ CTA ============ */
 .cta-section{
   padding:clamp(80px,10vw,140px) 0;
-  background:radial-gradient(circle at 50% 0%,rgba(0,229,255,.18) 0,transparent 60%),var(--bg);
+  background:radial-gradient(circle at 50% 0%,rgba(0,229,160,.18) 0,transparent 60%),var(--bg);
   position:relative;z-index:1;text-align:center;
 }
 .cta-title{font-family:var(--font-display);font-size:clamp(2.4rem,5vw,4rem);font-weight:900;letter-spacing:-.04em;margin-bottom:16px}
@@ -442,9 +472,9 @@ footer::before{
   content:"";position:absolute;bottom:-80px;left:50%;transform:translateX(-50%);
   width:1200px;height:280px;
   background:
-    radial-gradient(ellipse at center,rgba(0,229,255,.6) 0,transparent 55%),
-    radial-gradient(ellipse at 30% 50%,rgba(0,119,255,.45) 0,transparent 60%),
-    radial-gradient(ellipse at 70% 40%,rgba(124,58,237,.4) 0,transparent 60%);
+    radial-gradient(ellipse at center,rgba(0,229,160,.6) 0,transparent 55%),
+    radial-gradient(ellipse at 30% 50%,rgba(74,158,255,.45) 0,transparent 60%),
+    radial-gradient(ellipse at 70% 40%,rgba(168,85,247,.4) 0,transparent 60%);
   filter:blur(46px);opacity:.85;pointer-events:none;
 }
 .footer-grid{display:grid;grid-template-columns:minmax(0,1.8fr) repeat(3,minmax(0,1fr));gap:40px;margin-bottom:32px}
@@ -489,13 +519,7 @@ footer::before{
     <div class="loader-orbit" aria-hidden="true"></div>
     <div class="loader-inner">
       <div class="loader-logo">
-        <svg class="loader-logo-svg" width="36" height="36" viewBox="0 0 40 40" fill="none" aria-hidden="true">
-          <circle cx="20" cy="20" r="18" stroke="var(--accent)" stroke-width="2" opacity="0.3"/>
-          <path d="M20 6 Q20 20, 12 28" stroke="var(--accent)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-          <path d="M20 6 Q20 20, 28 28" stroke="var(--accent-blue)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-          <circle cx="20" cy="14" r="3" fill="var(--accent)" opacity="0.8"/>
-          <path d="M14 20 L17 20 L19 16 L21 24 L23 20 L26 20" stroke="var(--accent)" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
+        <img class="loader-logo-svg" src="pulse-node/svg/physiops-pulse-node-mark-only.svg" width="40" height="40" alt="" aria-hidden="true"/>
         <div class="loader-wordmark">Physio<span>PS</span> × Welltory</div>
       </div>
       <div class="loader-tag">Autonomic alliance brief · 2026</div>
@@ -510,13 +534,7 @@ footer::before{
 <header class="header" id="mainHeader">
   <nav class="nav-container">
     <a href="#" class="logo" aria-label="PhysioPS × Welltory Home">
-      <svg width="36" height="36" viewBox="0 0 40 40" fill="none" aria-hidden="true">
-        <circle cx="20" cy="20" r="18" stroke="var(--accent)" stroke-width="2" opacity="0.3"/>
-        <path d="M20 6 Q20 20, 12 28" stroke="var(--accent)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-        <path d="M20 6 Q20 20, 28 28" stroke="var(--accent-blue)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-        <circle cx="20" cy="14" r="3" fill="var(--accent)" opacity="0.8"/>
-        <path d="M14 20 L17 20 L19 16 L21 24 L23 20 L26 20" stroke="var(--accent)" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
+      <img class="logo-mark" src="pulse-node/svg/physiops-pulse-node-mark-only.svg" width="40" height="40" alt="" aria-hidden="true"/>
       <span class="logo-text">Physio<span class="logo-accent">PS</span> × Welltory</span>
     </a>
     <div class="nav-links">
@@ -536,7 +554,7 @@ footer::before{
 <section class="hero" id="hero">
   <div class="hero-bg">
     <div class="hero-bg-image" aria-hidden="true"></div>
-    <div class="hero-bg-grid" aria-hidden="true"></div>
+    <div class="hero-bg-signal" aria-hidden="true"></div>
     <div class="hero-overlay" aria-hidden="true"></div>
   </div>
   <div class="container">
@@ -885,7 +903,7 @@ footer::before{
             <div class="demo-upload">
               <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5" opacity="0.7"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
               <p>Drop .ans file here — 10-slide clinical report in &lt;30s</p>
-              <div style="display:inline-block;margin-top:10px;padding:7px 20px;border-radius:8px;background:var(--gradient-brand);color:#060a10;font-weight:700;font-size:.82rem;cursor:pointer">Select .ans File</div>
+              <div style="display:inline-block;margin-top:10px;padding:7px 20px;border-radius:8px;background:var(--gradient-brand);color:#030B14;font-weight:700;font-size:.82rem;cursor:pointer">Select .ans File</div>
             </div>
             <div class="demo-features">
               <div class="demo-feat"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg><span>P&S Analysis</span></div>
@@ -968,7 +986,7 @@ footer::before{
         <div class="timeline-marker"></div>
         <span class="timeline-system j">Joint · Day 11</span>
         <div class="timeline-title">PS/S labels push into Welltory</div>
-        <p class="timeline-body">PhysioPS sends the anonymized results back via the ps-results API. Welltory's AI receives: <code style="background:rgba(0,229,255,.1);color:var(--accent);padding:2px 6px;border-radius:4px;font-family:var(--font-mono);font-size:.8rem">ps_excess: true, alpha_sym_withdrawal: true, pattern: long_covid_ans</code>. Sarah's Today screen upgrades: her Stress score now shows "Autonomic recovery active" instead of just "High stress." Her energy goal shifts to specific ANS-calming protocols. She finally understands her own nervous system.</p>
+        <p class="timeline-body">PhysioPS sends the anonymized results back via the ps-results API. Welltory's AI receives: <code style="background:rgba(0,229,160,.1);color:var(--accent);padding:2px 6px;border-radius:4px;font-family:var(--font-mono);font-size:.8rem">ps_excess: true, alpha_sym_withdrawal: true, pattern: long_covid_ans</code>. Sarah's Today screen upgrades: her Stress score now shows "Autonomic recovery active" instead of just "High stress." Her energy goal shifts to specific ANS-calming protocols. She finally understands her own nervous system.</p>
       </div>
       <div class="timeline-item">
         <div class="timeline-marker"></div>
@@ -1172,12 +1190,7 @@ footer::before{
     <div class="footer-grid">
       <div class="footer-brand">
         <div class="logo" style="margin-bottom:12px">
-          <svg width="32" height="32" viewBox="0 0 40 40" fill="none" aria-hidden="true">
-            <circle cx="20" cy="20" r="18" stroke="var(--accent)" stroke-width="2" opacity="0.3"/>
-            <path d="M20 6 Q20 20, 12 28" stroke="var(--accent)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-            <path d="M20 6 Q20 20, 28 28" stroke="var(--accent-blue)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-            <circle cx="20" cy="14" r="3" fill="var(--accent)" opacity="0.8"/>
-          </svg>
+          <img class="logo-mark" src="pulse-node/svg/physiops-pulse-node-mark-only.svg" width="36" height="36" alt="" aria-hidden="true"/>
           <span class="logo-text">Physio<span class="logo-accent">PS</span></span>
         </div>
         <p class="footer-desc">Proactive means to a reactive healthcare world. The world's most advanced ANS diagnostic platform — built by the doctors who wrote the books.</p>
@@ -1232,13 +1245,16 @@ footer::before{
 
   function initParticles(){
     particles = [];
-    const n = Math.floor(W*H/9000);
+    const n = Math.floor(W*H/12000);
     for(let i=0;i<n;i++){
+      const roll = Math.random();
+      // Pulse Node hues: teal #00E5A0 ≈ 158, blue #4A9EFF ≈ 212, violet #A855F7 ≈ 271
+      const hue = roll < .55 ? 158 : roll < .9 ? 212 : 271;
       particles.push({
         x:Math.random()*W,y:Math.random()*H,
         vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,
-        r:Math.random()*1.5+.5,
-        hue:Math.random()<.7?180:210
+        r:Math.random()*1.4+.4,
+        hue
       });
     }
   }
